@@ -1,7 +1,25 @@
-import { Router } from 'express';
+import { Router, Request, Response, NextFunction } from 'express';
 import { prisma } from '../../shared/prisma';
+import { verifyAccessToken } from '../../shared/auth';
+import { upload } from '../../utils/upload';
 
 const router = Router();
+
+// Middleware auth sederhana
+const requireAuth = (req: any, res: Response, next: NextFunction) => {
+  const authHeader = req.headers.authorization;
+  if (!authHeader?.startsWith('Bearer ')) {
+    return res.status(401).json({ message: 'Unauthorized' });
+  }
+  const token = authHeader.split(' ')[1];
+  try {
+    const payload = verifyAccessToken(token);
+    req.user = payload;
+    next();
+  } catch (error) {
+    return res.status(401).json({ message: 'Invalid token' });
+  }
+};
 
 // GET /api/artists — list semua artist, filter by city/province/is_verified
 router.get('/', async (req, res) => {
@@ -62,6 +80,68 @@ router.get('/:slug', async (req, res) => {
     return res.json(artist);
   } catch (error) {
     return res.status(500).json({ message: 'Failed to fetch artist' });
+  }
+});
+
+// GET /api/artists/me/profile — dapatkan profil sendiri
+router.get('/me/profile', requireAuth, async (req: any, res) => {
+  try {
+    const userId = req.user.id;
+    let profile = await prisma.musicianProfile.findUnique({
+      where: { user_id: userId },
+      include: { user: { select: { email: true } } }
+    });
+    
+    if (!profile) {
+      return res.status(404).json({ message: 'Profile not found' });
+    }
+    return res.json(profile);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: 'Failed to get profile' });
+  }
+});
+
+// PUT /api/artists/me/profile — update profil sendiri
+router.put('/me/profile', requireAuth, upload.single('profile_photo'), async (req: any, res) => {
+  try {
+    const userId = req.user.id;
+    const { artist_name, real_name, bio, city, whatsapp, instagram, spotify_artist_url } = req.body;
+    
+    let profile_photo = undefined;
+    if (req.file) {
+      profile_photo = `/public/uploads/images/${req.file.filename}`;
+    }
+
+    const profile = await prisma.musicianProfile.upsert({
+      where: { user_id: userId },
+      update: {
+        artist_name,
+        real_name,
+        bio,
+        city,
+        whatsapp,
+        instagram,
+        spotify_artist_url,
+        ...(profile_photo && { profile_photo })
+      },
+      create: {
+        user_id: userId,
+        artist_name: artist_name || req.user.email?.split('@')[0] || 'Unknown',
+        real_name: real_name || '',
+        bio,
+        city,
+        whatsapp,
+        instagram,
+        spotify_artist_url,
+        ...(profile_photo && { profile_photo })
+      }
+    });
+
+    return res.json(profile);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: 'Failed to update profile' });
   }
 });
 

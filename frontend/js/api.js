@@ -109,12 +109,48 @@ export async function registerMusician(data) {
 }
 
 /** POST /api/songs */
-export async function submitSong(data, token) {
-  return apiFetch('/api/songs', {
-    method: 'POST',
-    headers: { 'Authorization': `Bearer ${token}` },
-    body: JSON.stringify(data)
+export async function submitSong(formData, token) {
+  try {
+    const response = await fetch(`${API_BASE_URL}/api/songs`, {
+      method: 'POST',
+      headers: { 'Authorization': `Bearer ${token}` },
+      body: formData // No Content-Type header so browser sets multipart boundary automatically
+    });
+    if (!response.ok) {
+      const err = await response.json().catch(() => ({ message: 'Unknown error' }));
+      throw new Error(err.message || `HTTP ${response.status}`);
+    }
+    return await response.json();
+  } catch (error) {
+    console.warn(`[API] /api/songs failed:`, error.message);
+    throw error;
+  }
+}
+
+/** GET /api/artists/me/profile */
+export async function getMyProfile(token) {
+  return apiFetch('/api/artists/me/profile', {
+    headers: { 'Authorization': `Bearer ${token}` }
   });
+}
+
+/** PUT /api/artists/me/profile */
+export async function updateMyProfile(formData, token) {
+  try {
+    const response = await fetch(`${API_BASE_URL}/api/artists/me/profile`, {
+      method: 'PUT',
+      headers: { 'Authorization': `Bearer ${token}` },
+      body: formData
+    });
+    if (!response.ok) {
+      const err = await response.json().catch(() => ({ message: 'Unknown error' }));
+      throw new Error(err.message || `HTTP ${response.status}`);
+    }
+    return await response.json();
+  } catch (error) {
+    console.warn(`[API] /api/artists/me/profile failed:`, error.message);
+    throw error;
+  }
 }
 
 /** POST /api/events */

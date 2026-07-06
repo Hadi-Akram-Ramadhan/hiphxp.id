@@ -1,4 +1,4 @@
-import { submitSong, submitEvent } from './api.js';
+import { submitSong, submitEvent, getMyProfile, updateMyProfile } from './api.js';
 
 // Check Auth
 const token = localStorage.getItem('access_token');
@@ -16,11 +16,104 @@ function parseJwt(token) {
   }
 }
 
-const user = parseJwt(token);
-// Extract user.sub (which is user_id) to link songs/events to this artist.
-// Note: Backend might expect artist_id. We need to handle this.
-// Wait, backend song create expects `artist_id`.
-// But user.sub is user_id. We might need to fetch musician profile first.
+function getDecodedToken() {
+  const token = localStorage.getItem('access_token');
+  return token ? parseJwt(token) : null;
+}
+
+// Load Profile
+async function loadProfile() {
+  const token = localStorage.getItem('access_token');
+  try {
+    const profile = await getMyProfile(token);
+    if (profile) {
+      document.getElementById('prof-artist-name').value = profile.artist_name || '';
+      document.getElementById('prof-real-name').value = profile.real_name || '';
+      document.getElementById('prof-bio').value = profile.bio || '';
+      document.getElementById('prof-city').value = profile.city || '';
+      document.getElementById('prof-whatsapp').value = profile.whatsapp || '';
+      document.getElementById('prof-instagram').value = profile.instagram || '';
+      document.getElementById('prof-spotify').value = profile.spotify_artist_url || '';
+    }
+  } catch (err) {
+    console.error('Failed to load profile:', err);
+  }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  const user = getDecodedToken();
+  if (user && user.email) {
+    document.getElementById('welcome-name').textContent = user.email.split('@')[0];
+  }
+  
+  loadProfile();
+  
+  const profileForm = document.getElementById('profile-form');
+  if (profileForm) {
+    profileForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const btn = profileForm.querySelector('button');
+      btn.textContent = 'Menyimpan...';
+      
+      const formData = new FormData();
+      formData.append('artist_name', document.getElementById('prof-artist-name').value);
+      formData.append('real_name', document.getElementById('prof-real-name').value);
+      formData.append('bio', document.getElementById('prof-bio').value);
+      formData.append('city', document.getElementById('prof-city').value);
+      formData.append('whatsapp', document.getElementById('prof-whatsapp').value);
+      formData.append('instagram', document.getElementById('prof-instagram').value);
+      formData.append('spotify_artist_url', document.getElementById('prof-spotify').value);
+      
+      const photoInput = document.getElementById('prof-photo');
+      if (photoInput.files[0]) {
+        formData.append('profile_photo', photoInput.files[0]);
+      }
+      
+      try {
+        await updateMyProfile(formData, localStorage.getItem('access_token'));
+        alert('Profil berhasil diperbarui!');
+      } catch (err) {
+        alert('Gagal memperbarui profil: ' + err.message);
+      } finally {
+        btn.textContent = 'Simpan Profil';
+      }
+    });
+  }
+
+  // Form Upload Rilisan (Lagu)
+  const songForm = document.getElementById('song-form');
+  if (songForm) {
+    songForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const btn = songForm.querySelector('button');
+      btn.textContent = 'Mengunggah...';
+
+      try {
+        const formData = new FormData();
+        formData.append('title', document.getElementById('song-title').value);
+        formData.append('slug', document.getElementById('song-slug').value);
+        formData.append('release_date', document.getElementById('song-date').value);
+        
+        const tokenPayload = getDecodedToken();
+        formData.append('artist_id', tokenPayload.id); 
+
+        const audioInput = document.getElementById('song-audio');
+        if (audioInput.files[0]) formData.append('audio', audioInput.files[0]);
+        
+        const coverInput = document.getElementById('song-cover');
+        if (coverInput.files[0]) formData.append('cover', coverInput.files[0]);
+        
+        await submitSong(formData, localStorage.getItem('access_token'));
+        alert('Rilisan berhasil diunggah!');
+        songForm.reset();
+      } catch (err) {
+        alert('Gagal mengunggah rilisan: ' + err.message);
+      } finally {
+        btn.textContent = 'PUBLISH LAGU';
+      }
+    });
+  }
+});
 
 // Let's implement a simple toast
 function showToast(msg) {
@@ -50,44 +143,6 @@ document.getElementById('btn-logout').addEventListener('click', () => {
   window.location.href = 'login.html';
 });
 
-// Helper to get artist_id from user token via an API if needed, 
-// but currently /api/auth/login doesn't return artist_id. 
-// For now, backend /api/songs POST requires artist_id.
-// Let's assume backend will handle matching user_id to artist_id if artist_id is missing or we pass user_id as a fallback.
-// Actually, I will pass user_id as artist_id for now to see if the backend accepts it (it expects a UUID).
-// If it fails, we know we need a route to fetch profile.
-
-// Submit Song
-document.getElementById('form-song').addEventListener('submit', async (e) => {
-  e.preventDefault();
-  
-  const payload = {
-    title: document.getElementById('song-title').value,
-    slug: document.getElementById('song-slug').value,
-    audio_url: document.getElementById('song-audio').value,
-    cover_image: document.getElementById('song-cover').value,
-    release_date: document.getElementById('song-date').value,
-    // We send user.sub (user_id) as artist_id. The backend should theoretically check this, 
-    // but looking at songs/routes.ts, it expects an actual artist_id from the `Artist` table.
-    // The registration created a `MusicianProfile`, not an `Artist`.
-    // Wait, the seed script created `Artist`. 
-    // If we want to strictly bypass for the sake of the UI demo, we will use a dummy artist_id from the database.
-    // Let's pass a dummy for now since we don't have the mapping endpoint yet, or use user.sub.
-    artist_id: user?.sub // this might fail FK constraint if MusicianProfile id != Artist id.
-  };
-
-  try {
-    const res = await submitSong(payload, token);
-    if (res.id) {
-      showToast('Lagu berhasil dipublish!');
-      e.target.reset();
-    } else {
-      showToast(res.message || 'Gagal publish lagu.');
-    }
-  } catch (err) {
-    showToast('Terjadi kesalahan pada sistem.');
-  }
-});
 
 // Submit Event
 document.getElementById('form-event').addEventListener('submit', async (e) => {

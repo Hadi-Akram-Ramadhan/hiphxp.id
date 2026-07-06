@@ -214,8 +214,53 @@
       <!-- PROFIL SECTION -->
       <section id="profil" class="active">
         <div class="dash-box">
-          <h3>Profil Musisi</h3>
-          <p class="desc" style="margin-bottom: 24px;">Fitur edit profil sedang dalam pengembangan. Saat ini Anda dapat menggunakan dashboard untuk mengunggah lagu dan acara.</p>
+          <h2 class="sec-head" style="margin-bottom: 24px;">PROFIL MUSISI</h2>
+          <form id="profile-form">
+            <div class="form-grid">
+              <div class="field">
+                <label>Nama Musisi / Alias *</label>
+                <input type="text" id="prof-artist-name" required>
+              </div>
+              <div class="field">
+                <label>Nama Asli</label>
+                <input type="text" id="prof-real-name">
+              </div>
+            </div>
+            
+            <div class="field">
+              <label>Bio Singkat</label>
+              <textarea id="prof-bio" rows="4" style="width: 100%; background: rgba(0,0,0,0.2) !important; border: 1.5px solid rgba(242,241,236,0.15) !important; color: var(--paper) !important; padding: 14px 16px !important; font-family: 'JetBrains Mono', monospace; font-size: 14px; border-radius: 8px !important;"></textarea>
+            </div>
+            
+            <div class="form-grid">
+              <div class="field">
+                <label>Kota Asal</label>
+                <input type="text" id="prof-city">
+              </div>
+              <div class="field">
+                <label>Foto Profil (JPG/PNG)</label>
+                <input type="file" id="prof-photo" accept="image/*">
+              </div>
+            </div>
+            
+            <div class="form-grid">
+              <div class="field">
+                <label>WhatsApp (Kontak Bisnis)</label>
+                <input type="text" id="prof-whatsapp">
+              </div>
+              <div class="field">
+                <label>Instagram URL</label>
+                <input type="text" id="prof-instagram">
+              </div>
+            </div>
+            
+            <div class="field">
+              <label>Spotify Artist URL</label>
+              <input type="text" id="prof-spotify">
+            </div>
+            
+            <button type="submit" class="btn primary" style="margin-top: 16px;">Simpan Profil</button>
+          </form>
         </div>
       </section>
 
@@ -235,13 +280,12 @@
             
             <div class="form-grid">
               <div class="field">
-                <label>Audio URL (MP3/WAV) *</label>
-                <input type="url" id="song-audio" required placeholder="https://domain.com/file.mp3">
-                <small>Pastikan file dapat diakses publik.</small>
+                <label>FILE AUDIO (MP3/WAV) *</label>
+                <input type="file" id="song-audio" accept="audio/*" required>
               </div>
               <div class="field">
-                <label>Cover Image URL</label>
-                <input type="url" id="song-cover" placeholder="https://domain.com/cover.jpg">
+                <label>COVER IMAGE (JPG/PNG)</label>
+                <input type="file" id="song-cover" accept="image/*">
               </div>
             </div>
 

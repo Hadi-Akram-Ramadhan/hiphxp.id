@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import { prisma } from '../../shared/prisma';
+import { upload } from '../../utils/upload';
 
 const router = Router();
 
@@ -44,9 +45,9 @@ router.get('/:slug', async (req, res) => {
 });
 
 // POST /api/songs — tambah lagu baru
-router.post('/', async (req, res) => {
+router.post('/', upload.fields([{ name: 'audio', maxCount: 1 }, { name: 'cover', maxCount: 1 }]), async (req: any, res) => {
   try {
-    const { title, slug, artist_id, genre_id, producer_id, audio_url, cover_image, release_date } = req.body;
+    const { title, slug, artist_id, genre_id, producer_id, release_date } = req.body;
 
     if (!title || !slug || !artist_id) {
       return res.status(400).json({ message: 'Missing required fields: title, slug, artist_id' });
@@ -55,6 +56,18 @@ router.post('/', async (req, res) => {
     const existing = await prisma.song.findUnique({ where: { slug } });
     if (existing) {
       return res.status(409).json({ message: 'Song with this slug already exists' });
+    }
+    
+    let audio_url = null;
+    let cover_image = null;
+    
+    if (req.files) {
+      if (req.files.audio && req.files.audio[0]) {
+        audio_url = `/public/uploads/audio/${req.files.audio[0].filename}`;
+      }
+      if (req.files.cover && req.files.cover[0]) {
+        cover_image = `/public/uploads/images/${req.files.cover[0].filename}`;
+      }
     }
 
     const song = await prisma.song.create({
@@ -73,6 +86,7 @@ router.post('/', async (req, res) => {
 
     return res.status(201).json(song);
   } catch (error) {
+    console.error(error);
     return res.status(500).json({ message: 'Failed to create song' });
   }
 });
