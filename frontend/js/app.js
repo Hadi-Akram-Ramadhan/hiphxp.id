@@ -3,7 +3,7 @@
  * Handles: API data fetching, dynamic rendering, filters, share, form submit
  */
 
-import { getStats, getSongs, getArtists, getEvents, submitPartnership } from './api.js';
+import { getStats, getSongs, getCollectives, getEvents, submitPartnership, getLifestyle, getEditorials, getReviews } from './api.js';
 
 // ─── Helpers ───────────────────────────────────────────────────────────────
 
@@ -105,11 +105,11 @@ async function loadSongs() {
   }
 }
 
-// ─── Community Hub — Collectives / Artists ─────────────────────────────────
+// ─── Community Hub — Collectives ───────────────────────────────────────────
 
-let allArtists = [];
+let allCollectives = [];
 
-async function loadArtists(cityFilter = '') {
+async function loadCollectives(cityFilter = '') {
   const grid = document.getElementById('collective-grid');
   if (!grid) return;
 
@@ -117,25 +117,25 @@ async function loadArtists(cityFilter = '') {
 
   try {
     const params = cityFilter ? { city: cityFilter } : {};
-    const data = await getArtists(params);
-    allArtists = Array.isArray(data) ? data : (data.data || []);
+    const data = await getCollectives(params);
+    allCollectives = Array.isArray(data) ? data : (data.data || []);
 
-    renderArtistGrid(allArtists);
+    renderCollectiveGrid(allCollectives);
   } catch {
     grid.innerHTML = '<div class="empty-state" style="color:rgba(242,241,236,0.6)"><p>Gagal memuat direktori.</p></div>';
   }
 }
 
-function renderArtistGrid(artists) {
+function renderCollectiveGrid(collectives) {
   const grid = document.getElementById('collective-grid');
   if (!grid) return;
 
-  if (!artists.length) {
+  if (!collectives.length) {
     grid.innerHTML = '<div class="empty-state" style="color:rgba(242,241,236,0.6)"><p>Tidak ada kolektif ditemukan.</p></div>';
     return;
   }
 
-  grid.innerHTML = artists.map(a => `
+  grid.innerHTML = collectives.map(a => `
     <div class="collective-card">
       <div class="collective-avatar">
         <span>${getInitials(a.name)}</span>
@@ -154,7 +154,7 @@ function initCityFilter() {
       chips.forEach(c => c.classList.remove('active'));
       chip.classList.add('active');
       const city = chip.dataset.city;
-      loadArtists(city === 'all' ? '' : city);
+      loadCollectives(city === 'all' ? '' : city);
     });
   });
 }
@@ -313,7 +313,7 @@ function escHtml(str) {
 document.addEventListener('DOMContentLoaded', () => {
   loadStats();
   loadSongs();
-  loadArtists();
+  loadCollectives();
   loadEvents();
   initCityFilter();
   initEventFilters();

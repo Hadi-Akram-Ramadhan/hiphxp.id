@@ -15,6 +15,10 @@ import dashboardRoutes from './modules/dashboard/routes';
 import songsRoutes from './modules/songs/routes';
 import usersRoutes from './modules/users/routes';
 import artistsRoutes from './modules/artists/routes';
+import collectivesRoutes from './modules/collectives/routes';
+import lifestyleRoutes from './modules/content/lifestyle.routes';
+import editorialRoutes from './modules/content/editorial.routes';
+import reviewsRoutes from './modules/content/reviews.routes';
 
 const app = express();
 
@@ -43,6 +47,10 @@ app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/songs', songsRoutes);
 app.use('/api/users', usersRoutes);
 app.use('/api/artists', artistsRoutes);
+app.use('/api/collectives', collectivesRoutes);
+app.use('/api/content/lifestyle', lifestyleRoutes);
+app.use('/api/content/editorials', editorialRoutes);
+app.use('/api/content/reviews', reviewsRoutes);
 
 app.get('/api/docs', (_req, res) => res.json({
   message: 'Backend API documentation',

@@ -48,6 +48,12 @@ export async function getArtists(params = {}) {
   return apiFetch(`/api/artists${qs ? '?' + qs : ''}`);
 }
 
+/** GET /api/collectives */
+export async function getCollectives(params = {}) {
+  const qs = new URLSearchParams(params).toString();
+  return apiFetch(`/api/collectives${qs ? '?' + qs : ''}`);
+}
+
 /** GET /api/events */
 export async function getEvents(params = {}) {
   const qs = new URLSearchParams(params).toString();
@@ -60,10 +66,62 @@ export async function getArticles(params = {}) {
   return apiFetch(`/api/content/articles${qs ? '?' + qs : ''}`);
 }
 
+/** GET /api/content/lifestyle (streetwear, graffiti, dance) */
+export async function getLifestyle(category = 'streetwear', params = {}) {
+  const qs = new URLSearchParams(params).toString();
+  return apiFetch(`/api/content/lifestyle/${category}${qs ? '?' + qs : ''}`);
+}
+
+/** GET /api/content/editorials (interviews, longforms, features) */
+export async function getEditorials(category = 'interviews', params = {}) {
+  const qs = new URLSearchParams(params).toString();
+  return apiFetch(`/api/content/editorials/${category}${qs ? '?' + qs : ''}`);
+}
+
+/** GET /api/content/reviews (music, radar) */
+export async function getReviews(category = 'music', params = {}) {
+  const qs = new URLSearchParams(params).toString();
+  return apiFetch(`/api/content/reviews/${category}${qs ? '?' + qs : ''}`);
+}
+
 /** POST /api/partnerships — submit partnership inquiry */
 export async function submitPartnership(data) {
   return apiFetch('/api/partnerships', {
     method: 'POST',
     body: JSON.stringify(data),
+  });
+}
+
+// ─── Auth & Musician Dashboard ─────────────────────────────────────────────
+
+export async function loginMusician(email, password) {
+  return apiFetch('/api/auth/login', {
+    method: 'POST',
+    body: JSON.stringify({ email, password })
+  });
+}
+
+export async function registerMusician(data) {
+  return apiFetch('/api/auth/register', {
+    method: 'POST',
+    body: JSON.stringify(data)
+  });
+}
+
+/** POST /api/songs */
+export async function submitSong(data, token) {
+  return apiFetch('/api/songs', {
+    method: 'POST',
+    headers: { 'Authorization': `Bearer ${token}` },
+    body: JSON.stringify(data)
+  });
+}
+
+/** POST /api/events */
+export async function submitEvent(data, token) {
+  return apiFetch('/api/events', {
+    method: 'POST',
+    headers: { 'Authorization': `Bearer ${token}` },
+    body: JSON.stringify(data)
   });
 }

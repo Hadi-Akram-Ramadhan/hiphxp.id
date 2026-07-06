@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard Musisi — hiphxp.id</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Work+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    body {
+      background: var(--ink) !important;
+      color: var(--paper) !important;
+    }
+    .dashboard-page {
+      padding-top: 80px;
+      min-height: calc(100vh - 100px);
+    }
+    
+    .dash-layout {
+      display: grid;
+      grid-template-columns: 250px 1fr;
+      gap: 40px;
+      margin-top: 40px;
+    }
+
+    .dash-sidebar {
+      border-right: 1px solid rgba(255,255,255,0.1);
+      padding-right: 20px;
+    }
+
+    .dash-nav {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .dash-nav button {
+      background: none;
+      border: none;
+      color: var(--grey);
+      font-family: 'Work Sans', sans-serif;
+      font-size: 16px;
+      text-align: left;
+      padding: 12px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .dash-nav button:hover {
+      background: rgba(255,255,255,0.05);
+      color: var(--paper);
+    }
+
+    .dash-nav button.active {
+      background: var(--red);
+      color: var(--paper);
+      font-weight: 600;
+    }
+
+    .dash-nav button.logout {
+      margin-top: 40px;
+      color: #ff4444;
+    }
+    .dash-nav button.logout:hover {
+      background: rgba(255, 68, 68, 0.1);
+    }
+
+    .dash-content section {
+      display: none;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .dash-content section.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Form Styles */
+    .dash-box {
+      background: rgba(255,255,255,0.02);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 16px;
+      padding: 32px;
+      margin-bottom: 24px;
+    }
+
+    .dash-box h3 {
+      margin-top: 0;
+      margin-bottom: 24px;
+      font-family: 'Archivo Black', sans-serif;
+      font-size: 24px;
+      text-transform: uppercase;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      padding-bottom: 12px;
+    }
+
+    /* Form Grid */
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+    
+    /* Form input styling */
+    .field {
+      margin-bottom: 20px;
+    }
+    .field label {
+      display: block;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11.5px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: rgba(242,241,236,0.6);
+      margin-bottom: 8px;
+    }
+    .field input, .field select {
+      width: 100%;
+      background: rgba(0,0,0,0.2) !important;
+      border: 1.5px solid rgba(242,241,236,0.15) !important;
+      color: var(--paper) !important;
+      padding: 14px 16px !important;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 14px;
+      border-radius: 8px !important;
+      transition: border-color .2s, background .2s;
+    }
+    .field input:focus, .field select:focus {
+      outline: none;
+      border-color: var(--red) !important;
+      background: rgba(0,0,0,0.4) !important;
+    }
+    .field select option {
+      background: var(--ink);
+      color: var(--paper);
+    }
+    
+    /* Button styles */
+    .btn {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12.5px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      padding: 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      border: none;
+      font-weight: 700;
+      transition: opacity .2s, transform .1s;
+    }
+    .btn:active {
+      transform: scale(0.98);
+    }
+    .btn.primary {
+      background: var(--red);
+      color: var(--paper);
+    }
+    .btn.primary:hover {
+      opacity: 0.9;
+    }
+    
+    @media (max-width: 768px) {
+      .dash-layout { grid-template-columns: 1fr; }
+      .dash-sidebar { border-right: none; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 20px; }
+      .form-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<header class="site">
+  <div class="wrap">
+    <a href="index.html" class="mark">
+      <svg width="34" height="34" viewBox="0 0 100 100" fill="none"><rect x="6" y="6" width="88" height="88" fill="none" stroke="#f2f1ec" stroke-width="7"/><g stroke="#f2f1ec" stroke-width="9"><path d="M22 20 L22 80"/><path d="M37 20 L28 80"/><path d="M52 20 L52 80"/><path d="M67 32 L58 80"/><path d="M78 44 L78 80"/></g></svg>
+      <span class="mark-word">hiphxp<span class="dot">.</span>id</span>
+    </a>
+    <nav class="primary">
+      <a href="index.html#musik">Musik</a>
+      <a href="music.html">Cari Lagu</a>
+      <a href="index.html#lifestyle">Lifestyle</a>
+      <a href="index.html#community">Community Hub</a>
+    </nav>
+    <a href="index.html" class="btn-cta" style="clip-path: none; border-radius: 4px;">Kembali ke Beranda</a>
+  </div>
+</header>
+
+<div class="dashboard-page wrap">
+  <div class="sec-head">
+    <h1 class="display">Dashboard Musisi</h1>
+    <p>Kelola profil, unggah rilisan, dan jadwalkan acaramu.</p>
+  </div>
+
+  <div class="dash-layout">
+    <aside class="dash-sidebar">
+      <div class="dash-nav">
+        <button class="dash-tab active" data-target="profil">Profil & Links</button>
+        <button class="dash-tab" data-target="upload-lagu">Upload Lagu</button>
+        <button class="dash-tab" data-target="upload-event">Jadwalkan Acara</button>
+        <button class="logout" id="btn-logout">Keluar</button>
+      </div>
+    </aside>
+
+    <main class="dash-content">
+      
+      <!-- PROFIL SECTION -->
+      <section id="profil" class="active">
+        <div class="dash-box">
+          <h3>Profil Musisi</h3>
+          <p class="desc" style="margin-bottom: 24px;">Fitur edit profil sedang dalam pengembangan. Saat ini Anda dapat menggunakan dashboard untuk mengunggah lagu dan acara.</p>
+        </div>
+      </section>
+
+      <!-- UPLOAD LAGU SECTION -->
+      <section id="upload-lagu">
+        <div class="dash-box">
+          <h3>Upload Rilisan Baru</h3>
+          <form id="form-song">
+            <div class="field">
+              <label>Judul Lagu *</label>
+              <input type="text" id="song-title" required placeholder="Cth: Malam Bising">
+            </div>
+            <div class="field">
+              <label>Slug (URL) *</label>
+              <input type="text" id="song-slug" required placeholder="Cth: malam-bising">
+            </div>
+            
+            <div class="form-grid">
+              <div class="field">
+                <label>Audio URL (MP3/WAV) *</label>
+                <input type="url" id="song-audio" required placeholder="https://domain.com/file.mp3">
+                <small>Pastikan file dapat diakses publik.</small>
+              </div>
+              <div class="field">
+                <label>Cover Image URL</label>
+                <input type="url" id="song-cover" placeholder="https://domain.com/cover.jpg">
+              </div>
+            </div>
+
+            <div class="field">
+              <label>Tanggal Rilis</label>
+              <input type="date" id="song-date">
+            </div>
+
+            <button type="submit" class="btn primary" style="margin-top: 16px;">Publish Lagu</button>
+          </form>
+        </div>
+      </section>
+
+      <!-- UPLOAD EVENT SECTION -->
+      <section id="upload-event">
+        <div class="dash-box">
+          <h3>Jadwalkan Acara</h3>
+          <form id="form-event">
+            <div class="field">
+              <label>Nama Acara *</label>
+              <input type="text" id="event-title" required placeholder="Cth: Rap City 2026">
+            </div>
+            
+            <div class="form-grid">
+              <div class="field">
+                <label>Kategori *</label>
+                <select id="event-category" required style="width:100%; padding:14px; border-radius:8px; background:rgba(255,255,255,0.05); color:white; border:1px solid rgba(255,255,255,0.2);">
+                  <option value="GIG">Gig Lokal</option>
+                  <option value="FESTIVAL">Festival</option>
+                  <option value="RAP_BATTLE">Rap Battle</option>
+                  <option value="WORKSHOP">Workshop</option>
+                </select>
+              </div>
+              <div class="field">
+                <label>Tanggal Acara *</label>
+                <input type="date" id="event-date" required>
+              </div>
+            </div>
+
+            <div class="form-grid">
+              <div class="field">
+                <label>Kota *</label>
+                <input type="text" id="event-city" required placeholder="Cth: Jakarta">
+              </div>
+              <div class="field">
+                <label>Lokasi / Venue</label>
+                <input type="text" id="event-location" placeholder="Cth: MBloc Space">
+              </div>
+            </div>
+            
+            <div class="field">
+              <label>Poster Image URL</label>
+              <input type="url" id="event-poster">
+            </div>
+
+            <button type="submit" class="btn primary" style="margin-top: 16px;">Buat Acara</button>
+          </form>
+        </div>
+      </section>
+
+    </main>
+  </div>
+</div>
+
+<div id="toast" class="toast" role="alert" aria-live="polite"></div>
+
+<script type="module" src="js/dashboard.js"></script>
+</body>
+</html>
