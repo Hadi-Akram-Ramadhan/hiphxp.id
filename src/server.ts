@@ -24,13 +24,15 @@ import reviewsRoutes from './modules/content/reviews.routes';
 
 const app = express();
 
-const uploadDir = path.join(__dirname, '../public/uploads');
+const uploadDir = path.join(__dirname, '../../public/uploads');
 if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(path.join(uploadDir, 'audio'), { recursive: true });
   fs.mkdirSync(path.join(uploadDir, 'images'), { recursive: true });
 }
 
-app.use(helmet());
+app.use(helmet({
+  crossOriginResourcePolicy: { policy: "cross-origin" }
+}));
 app.use(cors({ origin: env.corsOrigin, credentials: true }));
 app.use(compression());
 app.use(cookieParser());
@@ -38,7 +40,7 @@ app.use(express.json({ limit: '1mb' }));
 app.use(express.urlencoded({ extended: true }));
 app.use(morgan('dev'));
 app.use(rateLimit({ windowMs: env.rateLimitWindowMs, max: env.rateLimitMax }));
-app.use('/public', express.static(path.join(__dirname, '../public')));
+app.use('/public', express.static(path.join(__dirname, '../../public')));
 
 app.get('/health', (_req, res) => res.json({ status: 'ok' }));
 app.get('/maintenance', (_req, res) => res.status(200).json({

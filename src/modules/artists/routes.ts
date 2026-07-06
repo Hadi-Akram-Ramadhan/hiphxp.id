@@ -86,7 +86,7 @@ router.get('/:slug', async (req, res) => {
 // GET /api/artists/me/profile — dapatkan profil sendiri
 router.get('/me/profile', requireAuth, async (req: any, res) => {
   try {
-    const userId = req.user.id;
+    const userId = req.user.sub;
     let profile = await prisma.musicianProfile.findUnique({
       where: { user_id: userId },
       include: { user: { select: { email: true } } }
@@ -105,7 +105,7 @@ router.get('/me/profile', requireAuth, async (req: any, res) => {
 // PUT /api/artists/me/profile — update profil sendiri
 router.put('/me/profile', requireAuth, upload.single('profile_photo'), async (req: any, res) => {
   try {
-    const userId = req.user.id;
+    const userId = req.user.sub;
     const { artist_name, real_name, bio, city, whatsapp, instagram, spotify_artist_url } = req.body;
     
     let profile_photo = undefined;

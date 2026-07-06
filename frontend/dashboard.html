@@ -205,6 +205,7 @@
         <button class="dash-tab active" data-target="profil">Profil & Links</button>
         <button class="dash-tab" data-target="upload-lagu">Upload Lagu</button>
         <button class="dash-tab" data-target="upload-event">Jadwalkan Acara</button>
+        <button class="dash-tab" data-target="kelola-rilisan">Kelola Rilisan</button>
         <button class="logout" id="btn-logout">Keluar</button>
       </div>
     </aside>
@@ -343,6 +344,53 @@
 
             <button type="submit" class="btn primary" style="margin-top: 16px;">Buat Acara</button>
           </form>
+        </div>
+      </section>
+
+      <!-- KELOLA RILISAN SECTION -->
+      <section id="kelola-rilisan">
+        <div class="dash-box" style="margin-bottom: 32px;">
+          <h2 class="sec-head" style="margin-bottom: 24px;">LAGU SAYA</h2>
+          <div class="table-responsive" style="overflow-x: auto;">
+            <table class="dash-table" style="width: 100%; border-collapse: collapse; text-align: left;">
+              <thead>
+                <tr style="border-bottom: 2px solid rgba(242,241,236,0.15); color: rgba(255,255,255,0.7); font-family: 'JetBrains Mono', monospace; font-size: 13px;">
+                  <th style="padding: 12px 16px;">Cover</th>
+                  <th style="padding: 12px 16px;">Judul</th>
+                  <th style="padding: 12px 16px;">Tanggal Rilis</th>
+                  <th style="padding: 12px 16px;">Status</th>
+                  <th style="padding: 12px 16px; text-align: right;">Aksi</th>
+                </tr>
+              </thead>
+              <tbody id="my-songs-list">
+                <tr>
+                  <td colspan="5" style="padding: 24px; text-align: center; color: rgba(255,255,255,0.5);">Memuat lagu...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="dash-box">
+          <h2 class="sec-head" style="margin-bottom: 24px;">EVENT SAYA</h2>
+          <div class="table-responsive" style="overflow-x: auto;">
+            <table class="dash-table" style="width: 100%; border-collapse: collapse; text-align: left;">
+              <thead>
+                <tr style="border-bottom: 2px solid rgba(242,241,236,0.15); color: rgba(255,255,255,0.7); font-family: 'JetBrains Mono', monospace; font-size: 13px;">
+                  <th style="padding: 12px 16px;">Poster</th>
+                  <th style="padding: 12px 16px;">Nama Event</th>
+                  <th style="padding: 12px 16px;">Tanggal & Kota</th>
+                  <th style="padding: 12px 16px;">Status</th>
+                  <th style="padding: 12px 16px; text-align: right;">Aksi</th>
+                </tr>
+              </thead>
+              <tbody id="my-events-list">
+                <tr>
+                  <td colspan="5" style="padding: 24px; text-align: center; color: rgba(255,255,255,0.5);">Memuat event...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
       </section>
 

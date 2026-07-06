@@ -1,4 +1,4 @@
-import { submitSong, submitEvent, getMyProfile, updateMyProfile } from './api.js';
+import { submitSong, submitEvent, getMyProfile, updateMyProfile, getMySongs, updateSongStatus, deleteSong, getMyEvents, updateEventStatus, deleteEvent, resolveUrl } from './api.js';
 
 // Check Auth
 const token = localStorage.getItem('access_token');
@@ -40,10 +40,161 @@ async function loadProfile() {
   }
 }
 
+// Load Songs
+async function loadMySongs() {
+  const token = localStorage.getItem('access_token');
+  try {
+    const res = await getMySongs(token);
+    const container = document.getElementById('my-songs-list');
+    if (!container) return;
+    
+    if (!res.data || res.data.length === 0) {
+      container.innerHTML = `<tr><td colspan="5" style="padding: 24px; text-align: center; color: rgba(255,255,255,0.5);">Belum ada lagu yang diunggah.</td></tr>`;
+      return;
+    }
+    
+    container.innerHTML = res.data.map(song => {
+      const coverUrl = song.cover_image ? resolveUrl(song.cover_image) : 'assets/default-cover.jpg';
+      const releaseDate = song.release_date ? new Date(song.release_date).toLocaleDateString('id-ID') : '-';
+      const statusText = song.is_hidden ? 'Tersembunyi' : 'Publik';
+      const statusClass = song.is_hidden ? 'status-hidden' : 'status-public';
+      const toggleLabel = song.is_hidden ? 'Tampilkan' : 'Sembunyikan';
+      
+      return `
+        <tr style="border-bottom: 1px solid rgba(242,241,236,0.1); font-size: 14px;">
+          <td style="padding: 12px 16px;">
+            <img src="${coverUrl}" style="width: 40px; height: 40px; border-radius: 4px; object-fit: cover;">
+          </td>
+          <td style="padding: 12px 16px; font-weight: 600;">${song.title}</td>
+          <td style="padding: 12px 16px; font-family: 'JetBrains Mono', monospace;">${releaseDate}</td>
+          <td style="padding: 12px 16px;">
+            <span class="status-badge ${statusClass}" style="padding: 4px 8px; border-radius: 4px; font-size: 11px; font-family: 'JetBrains Mono', monospace; font-weight: bold; background: ${song.is_hidden ? 'rgba(255, 193, 7, 0.15)' : 'rgba(40, 167, 69, 0.15)'}; color: ${song.is_hidden ? '#ffc107' : '#28a745'}">
+              ${statusText}
+            </span>
+          </td>
+          <td style="padding: 12px 16px; text-align: right;">
+            <button class="btn-action toggle-song" data-id="${song.id}" data-hidden="${song.is_hidden}" style="background: none; border: 1px solid rgba(255,255,255,0.2); color: white; padding: 6px 12px; border-radius: 4px; cursor: pointer; margin-right: 8px; font-size: 12px;">${toggleLabel}</button>
+            <button class="btn-action delete-song" data-id="${song.id}" style="background: rgba(220,53,69,0.2); border: 1px solid #dc3545; color: #ff6b6b; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 12px;">Hapus</button>
+          </td>
+        </tr>
+      `;
+    }).join('');
+    
+    // Bind actions
+    container.querySelectorAll('.toggle-song').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const id = btn.dataset.id;
+        const isHidden = btn.dataset.hidden === 'true';
+        try {
+          await updateSongStatus(id, !isHidden, token);
+          showToast('Status lagu berhasil diperbarui!');
+          loadMySongs();
+        } catch (err) {
+          alert('Gagal mengubah status: ' + err.message);
+        }
+      });
+    });
+    
+    container.querySelectorAll('.delete-song').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        if (!confirm('Apakah Anda yakin ingin menghapus lagu ini secara permanen?')) return;
+        const id = btn.dataset.id;
+        try {
+          await deleteSong(id, token);
+          showToast('Lagu berhasil dihapus!');
+          loadMySongs();
+        } catch (err) {
+          alert('Gagal menghapus lagu: ' + err.message);
+        }
+      });
+    });
+    
+  } catch (err) {
+    console.error('Failed to load songs:', err);
+  }
+}
+
+// Load Events
+async function loadMyEvents() {
+  const token = localStorage.getItem('access_token');
+  try {
+    const res = await getMyEvents(token);
+    const container = document.getElementById('my-events-list');
+    if (!container) return;
+    
+    if (!res || res.length === 0) {
+      container.innerHTML = `<tr><td colspan="5" style="padding: 24px; text-align: center; color: rgba(255,255,255,0.5);">Belum ada event yang dijadwalkan.</td></tr>`;
+      return;
+    }
+    
+    container.innerHTML = res.map(event => {
+      const posterUrl = event.image_url ? resolveUrl(event.image_url) : 'assets/default-poster.jpg';
+      const eventDate = event.event_date ? new Date(event.event_date).toLocaleDateString('id-ID') : '-';
+      const isActive = event.status === 'PUBLISHED';
+      const statusText = isActive ? 'Aktif' : 'Draft/Hidden';
+      const statusClass = isActive ? 'status-public' : 'status-hidden';
+      const toggleLabel = isActive ? 'Sembunyikan' : 'Aktifkan';
+      
+      return `
+        <tr style="border-bottom: 1px solid rgba(242,241,236,0.1); font-size: 14px;">
+          <td style="padding: 12px 16px;">
+            <img src="${posterUrl}" style="width: 40px; height: 40px; border-radius: 4px; object-fit: cover;">
+          </td>
+          <td style="padding: 12px 16px; font-weight: 600;">${event.name}</td>
+          <td style="padding: 12px 16px; font-family: 'JetBrains Mono', monospace;">${eventDate} (${event.city || '-'})</td>
+          <td style="padding: 12px 16px;">
+            <span class="status-badge ${statusClass}" style="padding: 4px 8px; border-radius: 4px; font-size: 11px; font-family: 'JetBrains Mono', monospace; font-weight: bold; background: ${!isActive ? 'rgba(255, 193, 7, 0.15)' : 'rgba(40, 167, 69, 0.15)'}; color: ${!isActive ? '#ffc107' : '#28a745'}">
+              ${statusText}
+            </span>
+          </td>
+          <td style="padding: 12px 16px; text-align: right;">
+            <button class="btn-action toggle-event" data-id="${event.id}" data-status="${event.status}" style="background: none; border: 1px solid rgba(255,255,255,0.2); color: white; padding: 6px 12px; border-radius: 4px; cursor: pointer; margin-right: 8px; font-size: 12px;">${toggleLabel}</button>
+            <button class="btn-action delete-event" data-id="${event.id}" style="background: rgba(220,53,69,0.2); border: 1px solid #dc3545; color: #ff6b6b; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 12px;">Hapus</button>
+          </td>
+        </tr>
+      `;
+    }).join('');
+    
+    // Bind actions
+    container.querySelectorAll('.toggle-event').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const id = btn.dataset.id;
+        const status = btn.dataset.status;
+        const newStatus = status === 'PUBLISHED' ? 'DRAFT' : 'PUBLISHED';
+        try {
+          await updateEventStatus(id, newStatus, token);
+          showToast('Status event berhasil diperbarui!');
+          loadMyEvents();
+        } catch (err) {
+          alert('Gagal mengubah status event: ' + err.message);
+        }
+      });
+    });
+    
+    container.querySelectorAll('.delete-event').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        if (!confirm('Apakah Anda yakin ingin menghapus event ini?')) return;
+        const id = btn.dataset.id;
+        try {
+          await deleteEvent(id, token);
+          showToast('Event berhasil dihapus!');
+          loadMyEvents();
+        } catch (err) {
+          alert('Gagal menghapus event: ' + err.message);
+        }
+      });
+    });
+    
+  } catch (err) {
+    console.error('Failed to load events:', err);
+  }
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   const user = getDecodedToken();
-  if (user && user.email) {
-    document.getElementById('welcome-name').textContent = user.email.split('@')[0];
+  const welcomeEl = document.getElementById('welcome-name');
+  if (welcomeEl && user && user.email) {
+    welcomeEl.textContent = user.email.split('@')[0];
   }
   
   loadProfile();
@@ -81,7 +232,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // Form Upload Rilisan (Lagu)
-  const songForm = document.getElementById('song-form');
+  const songForm = document.getElementById('form-song');
   if (songForm) {
     songForm.addEventListener('submit', async (e) => {
       e.preventDefault();
@@ -106,6 +257,7 @@ document.addEventListener('DOMContentLoaded', () => {
         await submitSong(formData, localStorage.getItem('access_token'));
         alert('Rilisan berhasil diunggah!');
         songForm.reset();
+        loadMySongs(); // Refresh songs list
       } catch (err) {
         alert('Gagal mengunggah rilisan: ' + err.message);
       } finally {
@@ -134,6 +286,11 @@ tabs.forEach(tab => {
     
     tab.classList.add('active');
     document.getElementById(tab.dataset.target).classList.add('active');
+
+    if (tab.dataset.target === 'kelola-rilisan') {
+      loadMySongs();
+      loadMyEvents();
+    }
   });
 });
 
@@ -163,6 +320,7 @@ document.getElementById('form-event').addEventListener('submit', async (e) => {
     if (res.id) {
       showToast('Acara berhasil dijadwalkan!');
       e.target.reset();
+      loadMyEvents(); // Refresh events list
     } else {
       showToast(res.message || 'Gagal membuat acara.');
     }

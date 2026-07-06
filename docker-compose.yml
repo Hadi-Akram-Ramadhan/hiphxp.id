@@ -42,7 +42,7 @@ services:
         condition: service_healthy
     # Auto-migrate + seed + start
     command: >
-      sh -c "npx prisma migrate deploy &&
+      sh -c "npx prisma db push --accept-data-loss &&
              node dist/prisma/seed.js &&
              node dist/src/server.js"
 

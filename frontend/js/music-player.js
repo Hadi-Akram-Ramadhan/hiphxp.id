@@ -1,4 +1,4 @@
-import { getSongs } from './api.js';
+import { getSongs, resolveUrl } from './api.js';
 
 let allSongs = [];
 let currentQueue = [];
@@ -61,7 +61,7 @@ function renderList(songs) {
 
   resultsContainer.innerHTML = songs.map((s, index) => {
     const artistName = s.artist?.name || 'Unknown Artist';
-    const cover = s.cover_image || '';
+    const cover = s.cover_image ? resolveUrl(s.cover_image) : '';
     const coverHtml = cover 
       ? `<img src="${escapeHtml(cover)}" class="song-cover" alt="Cover">`
       : `<div class="song-cover" style="background:#333"></div>`;
@@ -131,7 +131,7 @@ function playSong(index) {
   playerArtist.textContent = song.artist?.name || 'Unknown Artist';
   
   if (song.cover_image) {
-    playerCover.src = song.cover_image;
+    playerCover.src = resolveUrl(song.cover_image);
     playerCover.style.display = 'block';
     playerCoverPlaceholder.style.display = 'none';
   } else {
@@ -140,7 +140,7 @@ function playSong(index) {
   }
 
   // Play Audio
-  audio.src = song.audio_url;
+  audio.src = resolveUrl(song.audio_url);
   audio.play().catch(e => {
     console.error("Audio play failed:", e);
     showToast("Gagal memutar audio. Pastikan URL valid.");
