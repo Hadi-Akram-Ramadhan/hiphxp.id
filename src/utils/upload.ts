@@ -5,7 +5,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    let dest = path.join(__dirname, '../../public/uploads');
+    let dest = path.join(process.cwd(), 'public/uploads');
     if (file.mimetype.startsWith('audio/')) {
       dest = path.join(dest, 'audio');
     } else if (file.mimetype.startsWith('image/')) {

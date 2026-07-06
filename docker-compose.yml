@@ -40,6 +40,8 @@ services:
     depends_on:
       db:
         condition: service_healthy
+    volumes:
+      - ./public/uploads:/app/public/uploads
     # Auto-migrate + seed + start
     command: >
       sh -c "npx prisma db push --accept-data-loss &&
