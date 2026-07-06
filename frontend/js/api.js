@@ -1,12 +1,13 @@
 /**
  * api.js — Backend connector for hiphxp.id
  * 
- * Change API_BASE_URL to match your backend deployment.
- * - Local dev:  'http://localhost:4000'
- * - Production: 'https://hiphxp.mooo.com' (or your actual domain)
+ * Auto-detects environment:
+ * - localhost / 127.0.0.1  → uses local dev backend
+ * - anything else          → uses production backend
  */
 
-const API_BASE_URL = 'https://hiphxp.mooo.com';
+const IS_LOCAL = ['localhost', '127.0.0.1', ''].includes(window.location.hostname);
+const API_BASE_URL = IS_LOCAL ? 'http://localhost:4000' : 'https://hiphxp.mooo.com';
 
 /**
  * Generic fetch wrapper with error handling
