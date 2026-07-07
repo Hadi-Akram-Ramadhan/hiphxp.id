@@ -3,7 +3,7 @@
  * Handles: API data fetching, dynamic rendering, filters, share, form submit
  */
 
-import { getStats, getSongs, getCollectives, getEvents, submitPartnership, getLifestyle, getEditorials, getReviews } from './api.js';
+import { getStats, getSongs, getCollectives, getEvents, submitPartnership, getLifestyle, getEditorials, getReviews } from './api.js?v=4';
 
 // ─── Helpers ───────────────────────────────────────────────────────────────
 
@@ -229,37 +229,26 @@ function initPartnershipForm() {
   const form = document.getElementById('partnership-form');
   if (!form) return;
 
-  form.addEventListener('submit', async (e) => {
+  form.addEventListener('submit', (e) => {
     e.preventDefault();
     const btn = form.querySelector('.form-submit');
     const name = document.getElementById('p-name')?.value?.trim();
-    const email = document.getElementById('p-email')?.value?.trim();
+    const wa = document.getElementById('p-wa')?.value?.trim();
     const needs = document.getElementById('p-needs')?.value?.trim();
 
-    if (!name || !email || !needs) {
+    if (!name || !wa || !needs) {
       showToast('⚠️ Isi semua field sebelum mengirim.');
       return;
     }
 
-    btn.disabled = true;
-    btn.textContent = 'Mengirim...';
-
-    try {
-      await submitPartnership({
-        brand_name: name,
-        contact_email: email,
-        message: needs,
-      });
-      showToast('✅ Pesan terkirim! Kami akan balas dalam 1×24 jam.');
-      form.reset();
-    } catch {
-      showToast('❌ Gagal mengirim. Coba lagi atau hubungi via WhatsApp.');
-    } finally {
-      btn.disabled = false;
-      btn.textContent = 'Kirim Pesan →';
-    }
+    const text = `Halo hiphxp.id!\nSaya ingin mendiskusikan kerja sama media.\n\n*Nama Brand / Label:* ${name}\n*Nomor WA:* ${wa}\n*Kebutuhan:* ${needs}`;
+    const waUrl = `https://wa.me/628159881312?text=${encodeURIComponent(text)}`;
+    
+    window.open(waUrl, '_blank');
+    form.reset();
   });
 }
+window.initPartnershipForm = initPartnershipForm;
 
 // ─── Social Share ──────────────────────────────────────────────────────────
 
@@ -287,6 +276,7 @@ function initShareButtons() {
     if (el) el.addEventListener('click', handler);
   }
 }
+window.initShareButtons = initShareButtons;
 
 // ─── Mobile Menu ───────────────────────────────────────────────────────────
 
@@ -298,9 +288,10 @@ function initMobileMenu() {
   hamburger?.addEventListener('click', () => menu?.classList.add('open'));
   close?.addEventListener('click', () => menu?.classList.remove('open'));
   menu?.querySelectorAll('a').forEach(a => {
-    a.addEventListener('click', () => menu.classList.remove('open'));
+    a.addEventListener('click', () => menu?.classList.remove('open'));
   });
 }
+window.initMobileMenu = initMobileMenu;
 
 // ─── Escape HTML ───────────────────────────────────────────────────────────
 function escHtml(str) {
@@ -348,15 +339,19 @@ function initAutoEmbeds() {
 
 // ─── Init ──────────────────────────────────────────────────────────────────
 
+window.initApp = function() {
+  if (typeof loadStats === 'function') loadStats();
+  if (typeof loadSongs === 'function') loadSongs();
+  if (typeof loadCollectives === 'function') loadCollectives();
+  if (typeof loadEvents === 'function') loadEvents();
+  if (typeof initCityFilter === 'function') initCityFilter();
+  if (typeof initEventFilters === 'function') initEventFilters();
+  if (typeof initPartnershipForm === 'function') initPartnershipForm();
+  if (typeof initShareButtons === 'function') initShareButtons();
+  if (typeof initMobileMenu === 'function') initMobileMenu();
+  if (typeof initAutoEmbeds === 'function') initAutoEmbeds();
+};
+
 document.addEventListener('DOMContentLoaded', () => {
-  loadStats();
-  loadSongs();
-  loadCollectives();
-  loadEvents();
-  initCityFilter();
-  initEventFilters();
-  initPartnershipForm();
-  initShareButtons();
-  initMobileMenu();
-  initAutoEmbeds();
+  // For safety if router.js doesn't run, though router.js does the primary init
 });

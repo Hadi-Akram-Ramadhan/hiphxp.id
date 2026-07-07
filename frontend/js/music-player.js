@@ -1,27 +1,11 @@
-import { getSongs, resolveUrl } from './api.js';
+import { getSongs, resolveUrl } from './api.js?v=4';
 
 let allSongs = [];
 let currentQueue = [];
 let currentIndex = -1;
 
-// Mobile Menu
-document.addEventListener('DOMContentLoaded', () => {
-  const mobileOpen = document.getElementById('mobile-open');
-  const mobileClose = document.getElementById('mobile-close');
-  const mobileMenu = document.getElementById('mobile-menu');
-
-  if (mobileOpen && mobileClose && mobileMenu) {
-    mobileOpen.addEventListener('click', () => mobileMenu.classList.add('open'));
-    mobileClose.addEventListener('click', () => mobileMenu.classList.remove('open'));
-    mobileMenu.querySelectorAll('a').forEach(a => {
-      a.addEventListener('click', () => mobileMenu.classList.remove('open'));
-    });
-  }
-});
 
 // DOM Elements
-const searchInput = document.getElementById('search-input');
-const resultsContainer = document.getElementById('search-results');
 const audio = document.getElementById('audio-element');
 const playerFooter = document.getElementById('player-footer');
 
@@ -57,8 +41,33 @@ function formatTime(seconds) {
   return `${mins}:${secs.toString().padStart(2, '0')}`;
 }
 
+let searchInput = null;
+let resultsContainer = null;
+
 // 1. Load Data & Render
-async function initSearch() {
+window.initMusicPage = async function() {
+  searchInput = document.getElementById('search-input');
+  resultsContainer = document.getElementById('search-results');
+  
+  if (!searchInput || !resultsContainer) return;
+
+  // 2. Search Logic
+  searchInput.addEventListener('input', (e) => {
+    const query = e.target.value.toLowerCase().trim();
+    if (!query) {
+      renderList(allSongs);
+      return;
+    }
+    
+    const filtered = allSongs.filter(s => {
+      const titleMatch = s.title.toLowerCase().includes(query);
+      const artistMatch = s.artist?.name?.toLowerCase().includes(query);
+      return titleMatch || artistMatch;
+    });
+    
+    renderList(filtered);
+  });
+
   try {
     const data = await getSongs();
     allSongs = Array.isArray(data) ? data : (data.data || []);
@@ -66,9 +75,11 @@ async function initSearch() {
   } catch (err) {
     resultsContainer.innerHTML = '<div class="empty-state">Gagal memuat lagu. Coba lagi nanti.</div>';
   }
-}
+};
 
 function renderList(songs) {
+  if (!resultsContainer) return;
+
   if (!songs.length) {
     resultsContainer.innerHTML = '<div class="empty-state">Tidak ada lagu ditemukan.</div>';
     return;
@@ -110,23 +121,6 @@ function renderList(songs) {
     });
   });
 }
-
-// 2. Search Logic
-searchInput.addEventListener('input', (e) => {
-  const query = e.target.value.toLowerCase().trim();
-  if (!query) {
-    renderList(allSongs);
-    return;
-  }
-  
-  const filtered = allSongs.filter(s => {
-    const titleMatch = s.title.toLowerCase().includes(query);
-    const artistMatch = s.artist?.name?.toLowerCase().includes(query);
-    return titleMatch || artistMatch;
-  });
-  
-  renderList(filtered);
-});
 
 // 3. Audio Player Logic
 function playSong(index) {
@@ -190,15 +184,17 @@ function updatePlayPauseUI(isPlaying) {
 }
 
 // Events
-btnPlay.addEventListener('click', togglePlay);
+if (btnPlay) {
+  btnPlay.addEventListener('click', togglePlay);
 
-btnPrev.addEventListener('click', () => {
-  if (currentIndex > 0) playSong(currentIndex - 1);
-});
+  btnPrev.addEventListener('click', () => {
+    if (currentIndex > 0) playSong(currentIndex - 1);
+  });
 
-btnNext.addEventListener('click', () => {
-  if (currentIndex < currentQueue.length - 1) playSong(currentIndex + 1);
-});
+  btnNext.addEventListener('click', () => {
+    if (currentIndex < currentQueue.length - 1) playSong(currentIndex + 1);
+  });
+}
 
 audio.addEventListener('play', () => updatePlayPauseUI(true));
 audio.addEventListener('pause', () => updatePlayPauseUI(false));
@@ -231,9 +227,13 @@ progressBg.addEventListener('click', (e) => {
 });
 
 // Volume
-volumeSlider.addEventListener('input', (e) => {
-  audio.volume = e.target.value;
-});
+if (volumeSlider) {
+  volumeSlider.addEventListener('input', (e) => {
+    audio.volume = e.target.value;
+    e.target.style.setProperty('--vol', `${e.target.value * 100}%`);
+  });
+  volumeSlider.style.setProperty('--vol', `${volumeSlider.value * 100}%`);
+}
 
 // Toast
 function showToast(msg) {
@@ -243,7 +243,3 @@ function showToast(msg) {
   setTimeout(() => t.classList.remove('show'), 3000);
 }
 
-// Init
-document.addEventListener('DOMContentLoaded', () => {
-  initSearch();
-});
