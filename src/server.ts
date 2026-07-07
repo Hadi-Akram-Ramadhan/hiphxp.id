@@ -23,6 +23,7 @@ import editorialRoutes from './modules/content/editorial.routes';
 import reviewsRoutes from './modules/content/reviews.routes';
 
 const app = express();
+app.set('trust proxy', 1); // Trust first proxy (Dokploy/Traefik)
 
 const uploadDir = path.join(process.cwd(), 'public/uploads');
 if (!fs.existsSync(uploadDir)) {
