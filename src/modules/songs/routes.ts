@@ -22,6 +22,7 @@ router.get('/', async (_req, res) => {
     });
     res.json({ data: songs, total: songs.length });
   } catch (error) {
+    console.error('[GET /api/songs] Prisma error:', error);
     res.status(500).json({ message: 'Failed to fetch songs' });
   }
 });
@@ -137,9 +138,9 @@ router.post('/', requireAuth, upload.fields([{ name: 'audio', maxCount: 1 }, { n
     });
 
     return res.status(201).json(song);
-  } catch (error) {
-    console.error(error);
-    return res.status(500).json({ message: 'Failed to create song' });
+  } catch (error: any) {
+    console.error('[POST /api/songs] Prisma error:', error?.message || error);
+    return res.status(500).json({ message: 'Failed to create song', error: error?.message });
   }
 });
 

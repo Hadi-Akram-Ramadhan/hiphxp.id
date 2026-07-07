@@ -31,7 +31,8 @@ if (!fs.existsSync(uploadDir)) {
 }
 
 app.use(helmet({
-  crossOriginResourcePolicy: { policy: "cross-origin" }
+  crossOriginResourcePolicy: { policy: "cross-origin" },
+  contentSecurityPolicy: false
 }));
 app.use(cors({ origin: env.corsOrigin, credentials: true }));
 app.use(compression());
