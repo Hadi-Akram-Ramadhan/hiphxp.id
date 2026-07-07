@@ -175,13 +175,13 @@ section { padding: 88px 0; border-bottom: 1px solid var(--grey-line); }
 /* ================================================================
    LIFESTYLE
    ================================================================ */
-.lifestyle-grid { display: grid; grid-template-columns: 1.2fr 1fr 1fr; gap: 22px; }
+.lifestyle-grid { display: flex; gap: 22px; }
 .life-card {
   position: relative; overflow: hidden; min-height: 400px; display: flex; flex-direction: column; justify-content: flex-end;
   padding: 26px; color: var(--paper); clip-path: polygon(0 0,100% 0,100% 96%,92% 100%,0 100%);
-  cursor: pointer; transition: transform .2s;
+  cursor: pointer; flex: 1; transition: flex 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), transform 0.2s ease;
 }
-.life-card:hover { transform: translateY(-4px); }
+.life-card:hover { flex: 1.5; transform: translateY(-4px); }
 .life-1 { background: linear-gradient(160deg,#1a1a1a,#0a0a0a 60%,var(--red) 165%); }
 .life-2 { background: linear-gradient(200deg,#20201d,#0a0a0a); }
 .life-3 { background: linear-gradient(180deg,#111,#000); }
@@ -366,6 +366,23 @@ footer ul a:hover { color: var(--red); }
 .footer-bottom { display: flex; justify-content: space-between; padding-top: 20px; font-family: 'JetBrains Mono', monospace; font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; flex-wrap: wrap; gap: 10px; }
 
 /* ================================================================
+   KONTAK
+   ================================================================ */
+.contact-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-top: 36px; max-width: 800px; }
+.contact-card {
+  background: var(--ink); border: 1.5px solid rgba(242,241,236,0.1); padding: 20px 24px;
+  display: flex; align-items: center; gap: 20px; color: var(--paper); text-decoration: none;
+  transition: all .2s ease;
+  clip-path: polygon(12px 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%, 0 12px);
+}
+.contact-card:hover { border-color: rgba(242,241,236,0.3); transform: translateY(-4px); }
+.contact-icon { font-size: 24px; display: flex; align-items: center; justify-content: center; width: 44px; height: 44px; background: rgba(242,241,236,0.08); border-radius: 50%; color: var(--paper); }
+.contact-icon svg { width: 22px; height: 22px; fill: currentColor; }
+.contact-info { display: flex; flex-direction: column; }
+.contact-info b { font-family: 'JetBrains Mono', monospace; font-size: 11.5px; text-transform: uppercase; letter-spacing: 0.08em; color: rgba(242,241,236,0.5); margin-bottom: 4px; }
+.contact-info span { font-size: 18px; font-weight: 600; }
+
+/* ================================================================
    RESPONSIVE
    ================================================================ */
 @media (max-width: 980px) {
@@ -377,7 +394,7 @@ footer ul a:hover { color: var(--red); }
   .releases-grid { grid-template-columns: 1fr; }
   .article-demo { grid-template-columns: 1fr; }
   .article-demo .col-a { border-right: none; border-bottom: 2px solid var(--ink); }
-  .lifestyle-grid { grid-template-columns: 1fr; }
+  .lifestyle-grid { flex-direction: column; }
   .feature-editorial { grid-template-columns: 1fr; }
   .collective-grid { grid-template-columns: repeat(2,1fr); }
   .event-panel { grid-template-columns: 1fr; }
@@ -394,4 +411,5 @@ footer ul a:hover { color: var(--red); }
   .collective-grid { grid-template-columns: 1fr; }
   .footer-top { grid-template-columns: 1fr; }
   .share-buttons { flex-wrap: wrap; }
+  .contact-grid { grid-template-columns: 1fr; }
 }

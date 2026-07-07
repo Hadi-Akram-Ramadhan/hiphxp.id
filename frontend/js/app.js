@@ -308,6 +308,44 @@ function escHtml(str) {
   return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 }
 
+// ─── Auto Media Embedding ──────────────────────────────────────────────────
+function initAutoEmbeds() {
+  const links = document.querySelectorAll('.auto-embed-link');
+  links.forEach(link => {
+    const url = link.href;
+    let embedHtml = '';
+    
+    if (url.includes('spotify.com')) {
+      const match = url.match(/(track|album|playlist)\/([a-zA-Z0-9]+)/);
+      if (match) {
+        embedHtml = `<iframe style="border-radius:12px; margin-bottom:14px;" src="https://open.spotify.com/embed/${match[1]}/${match[2]}?utm_source=generator" width="100%" height="152" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>`;
+      }
+    } else if (url.includes('youtube.com') || url.includes('youtu.be')) {
+      let vidId = '';
+      if (url.includes('youtube.com/watch?v=')) vidId = new URL(url).searchParams.get('v');
+      else if (url.includes('youtu.be/')) vidId = url.split('youtu.be/')[1].split('?')[0];
+      if (vidId) {
+        embedHtml = `<iframe style="border-radius:12px; margin-bottom:14px; aspect-ratio: 16/9;" width="100%" src="https://www.youtube.com/embed/${vidId}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+      }
+    } else if (url.includes('apple.com')) {
+      const parts = url.split('apple.com/')[1];
+      if (parts) {
+        embedHtml = `<iframe style="border-radius:12px; margin-bottom:14px; max-width:100%;" allow="autoplay *; encrypted-media *; fullscreen *; clipboard-write" frameborder="0" height="175" width="100%" src="https://embed.music.apple.com/${parts}"></iframe>`;
+      }
+    } else if (url.includes('tiktok.com')) {
+      embedHtml = `<div class="embed-box" onclick="window.open('${url}', '_blank')"><div class="embed-icon ic-tiktok" style="background:#000;color:#fff;border-radius:50%;width:24px;height:24px;display:flex;align-items:center;justify-content:center;">♪</div><div class="embed-meta"><b>TikTok Video</b><span>Buka di TikTok</span></div></div>`;
+    } else if (url.includes('instagram.com')) {
+      embedHtml = `<div class="embed-box" onclick="window.open('${url}', '_blank')"><div class="embed-icon ic-ig" style="background:radial-gradient(circle at 30% 110%, #fdf497 0%, #fd5949 45%, #d6249f 60%, #285AEB 90%);color:#fff;border-radius:50%;width:24px;height:24px;display:flex;align-items:center;justify-content:center;">◎</div><div class="embed-meta"><b>Instagram Post</b><span>Buka di Instagram</span></div></div>`;
+    }
+
+    if (embedHtml) {
+      const wrapper = document.createElement('div');
+      wrapper.innerHTML = embedHtml;
+      link.replaceWith(wrapper.firstChild);
+    }
+  });
+}
+
 // ─── Init ──────────────────────────────────────────────────────────────────
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -320,4 +358,5 @@ document.addEventListener('DOMContentLoaded', () => {
   initPartnershipForm();
   initShareButtons();
   initMobileMenu();
+  initAutoEmbeds();
 });
