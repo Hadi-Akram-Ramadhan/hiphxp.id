@@ -450,10 +450,10 @@ function showContentModal(title, subtitle, contentHtml) {
         font-size: 15px;
         line-height: 1.7;
         opacity: 0.9;
-        white-space: pre-wrap;
       }
       .custom-content-body p {
         margin-bottom: 16px;
+        white-space: pre-wrap;
       }
       .custom-content-body strong {
         color: #fff;
