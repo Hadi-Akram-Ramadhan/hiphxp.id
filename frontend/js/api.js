@@ -21,9 +21,15 @@ export function resolveUrl(url) {
  */
 export async function apiFetch(path, options = {}) {
   try {
+    const token = localStorage.getItem('access_token');
+    const headers = { 'Content-Type': 'application/json', ...options.headers };
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
+    }
+
     const response = await fetch(`${API_BASE_URL}${path}`, {
       ...options,
-      headers: { 'Content-Type': 'application/json', ...options.headers },
+      headers
     });
     if (!response.ok) {
       if (response.status === 401 && !path.includes('/auth/login')) {
