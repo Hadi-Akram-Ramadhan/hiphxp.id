@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
   try {
     const payload = JSON.parse(atob(token.split('.')[1]));
-    if (payload.account_type !== 'ADMIN' && payload.account_type !== 'SUPER_ADMIN') {
+    if (payload.role !== 'ADMIN' && payload.role !== 'SUPER_ADMIN') {
       alert('Akses ditolak: Hanya Admin');
       window.location.href = 'dashboard.html';
       return;
