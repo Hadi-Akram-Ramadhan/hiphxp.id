@@ -21,6 +21,8 @@ import collectivesRoutes from './modules/collectives/routes';
 import lifestyleRoutes from './modules/content/lifestyle.routes';
 import editorialRoutes from './modules/content/editorial.routes';
 import reviewsRoutes from './modules/content/reviews.routes';
+import trackingRoutes from './modules/tracking/routes';
+import adminRoutes from './modules/admin/routes';
 
 const app = express();
 app.set('trust proxy', 1); // Trust first proxy (Dokploy/Traefik)
@@ -61,6 +63,8 @@ app.get('/maintenance', (_req, res) => res.status(200).json({
 }));
 
 app.use('/api/auth', authRoutes);
+app.use('/api/track', trackingRoutes);
+app.use('/api/admin', adminRoutes);
 app.use('/api/content', contentRoutes);
 app.use('/api/events', eventRoutes);
 app.use('/api/partnerships', partnershipRoutes);
