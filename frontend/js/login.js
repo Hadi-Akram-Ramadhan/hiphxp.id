@@ -23,8 +23,18 @@ window.initLogin = function() {
     }
   
     // Redirect if already logged in
-    if (localStorage.getItem('access_token')) {
-      window.location.href = 'dashboard.html';
+    const token = localStorage.getItem('access_token');
+    if (token) {
+      try {
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        if (payload.role === 'ADMIN' || payload.role === 'SUPER_ADMIN') {
+          window.location.href = 'admin.html';
+        } else {
+          window.location.href = 'dashboard.html';
+        }
+      } catch (e) {
+        window.location.href = 'dashboard.html';
+      }
     }
   
     // Login
@@ -37,7 +47,16 @@ window.initLogin = function() {
         const res = await loginMusician(email, pass);
         if (res.accessToken) {
           localStorage.setItem('access_token', res.accessToken);
-          window.location.href = 'dashboard.html';
+          try {
+            const payload = JSON.parse(atob(res.accessToken.split('.')[1]));
+            if (payload.role === 'ADMIN' || payload.role === 'SUPER_ADMIN') {
+              window.location.href = 'admin.html';
+            } else {
+              window.location.href = 'dashboard.html';
+            }
+          } catch (e) {
+            window.location.href = 'dashboard.html';
+          }
         } else {
           showToast(res.message || 'Login gagal.');
         }
