@@ -26,14 +26,18 @@ const routes_9 = __importDefault(require("./modules/collectives/routes"));
 const lifestyle_routes_1 = __importDefault(require("./modules/content/lifestyle.routes"));
 const editorial_routes_1 = __importDefault(require("./modules/content/editorial.routes"));
 const reviews_routes_1 = __importDefault(require("./modules/content/reviews.routes"));
+const routes_10 = __importDefault(require("./modules/tracking/routes"));
+const routes_11 = __importDefault(require("./modules/admin/routes"));
 const app = (0, express_1.default)();
+app.set('trust proxy', 1); // Trust first proxy (Dokploy/Traefik)
 const uploadDir = path_1.default.join(process.cwd(), 'public/uploads');
 if (!fs_1.default.existsSync(uploadDir)) {
     fs_1.default.mkdirSync(path_1.default.join(uploadDir, 'audio'), { recursive: true });
     fs_1.default.mkdirSync(path_1.default.join(uploadDir, 'images'), { recursive: true });
 }
 app.use((0, helmet_1.default)({
-    crossOriginResourcePolicy: { policy: "cross-origin" }
+    crossOriginResourcePolicy: { policy: "cross-origin" },
+    contentSecurityPolicy: false
 }));
 app.use((0, cors_1.default)({ origin: env_1.env.corsOrigin, credentials: true }));
 app.use((0, compression_1.default)());
@@ -41,9 +45,14 @@ app.use((0, cookie_parser_1.default)());
 app.use(express_1.default.json({ limit: '1mb' }));
 app.use(express_1.default.urlencoded({ extended: true }));
 app.use((0, morgan_1.default)('dev'));
-app.use((0, express_rate_limit_1.default)({ windowMs: env_1.env.rateLimitWindowMs, max: env_1.env.rateLimitMax }));
+app.use('/api', (0, express_rate_limit_1.default)({ windowMs: env_1.env.rateLimitWindowMs, max: env_1.env.rateLimitMax }));
 app.use('/public', express_1.default.static(path_1.default.join(process.cwd(), 'public')));
-app.use(express_1.default.static(path_1.default.join(process.cwd(), 'frontend'))); // Serve static frontend files
+const frontendPath = path_1.default.join(process.cwd(), 'frontend');
+app.use(express_1.default.static(frontendPath)); // Serve static frontend files
+// Fallback untuk root URL, berjaga-jaga jika express.static gagal
+app.get('/', (req, res) => {
+    res.sendFile(path_1.default.join(frontendPath, 'index.html'));
+});
 app.get('/health', (_req, res) => res.json({ status: 'ok' }));
 app.get('/maintenance', (_req, res) => res.status(200).json({
     message: 'Maintenance / Coming Soon',
@@ -52,6 +61,8 @@ app.get('/maintenance', (_req, res) => res.status(200).json({
     backend: 'ready',
 }));
 app.use('/api/auth', routes_1.default);
+app.use('/api/track', routes_10.default);
+app.use('/api/admin', routes_11.default);
 app.use('/api/content', routes_2.default);
 app.use('/api/events', routes_3.default);
 app.use('/api/partnerships', routes_4.default);
