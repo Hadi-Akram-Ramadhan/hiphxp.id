@@ -75,6 +75,10 @@
           <button class="dash-tab" data-target="users">Users</button>
           <button class="dash-tab" data-target="songs">Songs</button>
           <button class="dash-tab" data-target="events">Events</button>
+          <button class="dash-tab" data-target="reviews">Reviews</button>
+          <button class="dash-tab" data-target="radar">Release Radar</button>
+          <button class="dash-tab" data-target="lifestyle">Lifestyle</button>
+          <button class="dash-tab" data-target="interviews">Wawancara</button>
           <button class="logout" onclick="logout()">Keluar</button>
         </nav>
       </aside>
@@ -162,6 +166,193 @@
                   </tr>
                 </thead>
                 <tbody id="admin-events-list"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- REVIEWS SECTION -->
+        <section id="reviews" style="display:none;">
+          <div class="dash-box" style="margin-bottom: 30px;">
+            <h2 class="sec-head" style="margin-bottom: 24px;">TAMBAH REVIEW BARU</h2>
+            <form id="form-admin-review" style="display:flex; flex-direction:column; gap:16px;">
+              <div class="field" style="display:flex; flex-direction:column; gap:6px;">
+                <label style="font-size:12px; font-weight:600; opacity:0.8;">Judul Review *</label>
+                <input type="text" id="review-title" required placeholder="Cth: Beton & Bara Wajib Dengar" style="padding:10px 14px; background:#151515; border:1px solid rgba(255,255,255,0.1); border-radius:4px; color:#fff;">
+              </div>
+              <div class="field" style="display:flex; flex-direction:column; gap:6px;">
+                <label style="font-size:12px; font-weight:600; opacity:0.8;">Slug (URL) *</label>
+                <input type="text" id="review-slug" required placeholder="Cth: beton-bara-wajib-dengar" style="padding:10px 14px; background:#151515; border:1px solid rgba(255,255,255,0.1); border-radius:4px; color:#fff;">
+              </div>
+              <div class="form-grid" style="display:grid; grid-template-columns:1fr 1fr; gap:20px;">
+                <div class="field" style="display:flex; flex-direction:column; gap:6px;">
+                  <label style="font-size:12px; font-weight:600; opacity:0.8;">Artis *</label>
+                  <select id="review-artist-id" required style="padding:10px; background:#151515; border:1px solid rgba(255,255,255,0.1); border-radius:4px; color:#fff;"></select>
+                </div>
+                <div class="field" style="display:flex; flex-direction:column; gap:6px;">
+                  <label style="font-size:12px; font-weight:600; opacity:0.8;">Rating (1.0 - 10.0)</label>
+                  <input type="number" step="0.1" min="1" max="10" id="review-rating" placeholder="Cth: 8.5" style="padding:10px 14px; background:#151515; border:1px solid rgba(255,255,255,0.1); border-radius:4px; color:#fff;">
+                </div>
+              </div>
+              <div class="field" style="display:flex; flex-direction:column; gap:6px;">
+                <label style="font-size:12px; font-weight:600; opacity:0.8;">Konten Review *</label>
+                <textarea id="review-content" required placeholder="Tuliskan ulasan mendalam di sini..." style="padding:12px; background:#151515; border:1px solid rgba(255,255,255,0.1); border-radius:4px; color:#fff; min-height:120px; font-family:inherit; resize:vertical;"></textarea>
+              </div>
+              <button type="submit" class="btn primary" style="margin-top: 16px; align-self: flex-start;">Publish Review</button>
+            </form>
+          </div>
+          <div class="dash-box">
+            <h2 class="sec-head" style="margin-bottom: 24px;">DAFTAR REVIEWS</h2>
+            <div style="overflow-x:auto;">
+              <table style="width:100%; text-align:left; border-collapse:collapse;">
+                <thead>
+                  <tr style="border-bottom:1px solid rgba(255,255,255,0.1);">
+                    <th style="padding:12px;">Judul</th>
+                    <th style="padding:12px;">Artis</th>
+                    <th style="padding:12px;">Rating</th>
+                    <th style="padding:12px;">Aksi</th>
+                  </tr>
+                </thead>
+                <tbody id="admin-reviews-list"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- RADAR SECTION -->
+        <section id="radar" style="display:none;">
+          <div class="dash-box" style="margin-bottom: 30px;">
+            <h2 class="sec-head" style="margin-bottom: 24px;">TAMBAH RADAR BARU</h2>
+            <form id="form-admin-radar" style="display:flex; flex-direction:column; gap:16px;">
+              <div class="field" style="display:flex; flex-direction:column; gap:6px;">
+                <label style="font-size:12px; font-weight:600; opacity:0.8;">Judul Rilisan *</label>
+                <input type="text" id="radar-title" required placeholder="Cth: Senja di Malioboro" style="padding:10px 14px; background:#151515; border:1px solid rgba(255,255,255,0.1); border-radius:4px; color:#fff;">
+              </div>
+              <div class="field" style="display:flex; flex-direction:column; gap:6px;">
+                <label style="font-size:12px; font-weight:600; opacity:0.8;">Slug (URL) *</label>
+                <input type="text" id="radar-slug" required placeholder="Cth: senja-di-malioboro" style="padding:10px 14px; background:#151515; border:1px solid rgba(255,255,255,0.1); border-radius:4px; color:#fff;">
+              </div>
+              <div class="field" style="display:flex; flex-direction:column; gap:6px;">
+                <label style="font-size:12px; font-weight:600; opacity:0.8;">Artis *</label>
+                <select id="radar-artist-id" required style="padding:10px; background:#151515; border:1px solid rgba(255,255,255,0.1); border-radius:4px; color:#fff;"></select>
+              </div>
+              <div class="field" style="display:flex; flex-direction:column; gap:6px;">
+                <label style="font-size:12px; font-weight:600; opacity:0.8;">Konteks/Deskripsi Radar *</label>
+                <textarea id="radar-content" required placeholder="Tuliskan ulasan singkat/alasan kenapa lagu ini direkomendasikan..." style="padding:12px; background:#151515; border:1px solid rgba(255,255,255,0.1); border-radius:4px; color:#fff; min-height:80px; font-family:inherit; resize:vertical;"></textarea>
+              </div>
+              <button type="submit" class="btn primary" style="margin-top: 16px; align-self: flex-start;">Publish Radar</button>
+            </form>
+          </div>
+          <div class="dash-box">
+            <h2 class="sec-head" style="margin-bottom: 24px;">DAFTAR RELEASE RADAR</h2>
+            <div style="overflow-x:auto;">
+              <table style="width:100%; text-align:left; border-collapse:collapse;">
+                <thead>
+                  <tr style="border-bottom:1px solid rgba(255,255,255,0.1);">
+                    <th style="padding:12px;">Judul</th>
+                    <th style="padding:12px;">Artis</th>
+                    <th style="padding:12px;">Aksi</th>
+                  </tr>
+                </thead>
+                <tbody id="admin-radar-list"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- LIFESTYLE SECTION -->
+        <section id="lifestyle" style="display:none;">
+          <div class="dash-box" style="margin-bottom: 30px;">
+            <h2 class="sec-head" style="margin-bottom: 24px;">TAMBAH POST LIFESTYLE BARU</h2>
+            <form id="form-admin-lifestyle" style="display:flex; flex-direction:column; gap:16px;">
+              <div class="form-grid" style="display:grid; grid-template-columns:1fr 1fr; gap:20px;">
+                <div class="field" style="display:flex; flex-direction:column; gap:6px;">
+                  <label style="font-size:12px; font-weight:600; opacity:0.8;">Kategori Lifestyle *</label>
+                  <select id="lifestyle-category" required style="padding:10px; background:#151515; border:1px solid rgba(255,255,255,0.1); border-radius:4px; color:#fff;">
+                    <option value="streetwear">Streetwear / Fashion</option>
+                    <option value="graffiti">Graffiti / Mural</option>
+                    <option value="dance">Dance</option>
+                  </select>
+                </div>
+                <div class="field" style="display:flex; flex-direction:column; gap:6px;">
+                  <label style="font-size:12px; font-weight:600; opacity:0.8;">Judul Post *</label>
+                  <input type="text" id="lifestyle-title" required placeholder="Cth: Kolaborasi Graffiti Bandung" style="padding:10px 14px; background:#151515; border:1px solid rgba(255,255,255,0.1); border-radius:4px; color:#fff;">
+                </div>
+              </div>
+              <div class="field" style="display:flex; flex-direction:column; gap:6px;">
+                <label style="font-size:12px; font-weight:600; opacity:0.8;">Slug (URL) *</label>
+                <input type="text" id="lifestyle-slug" required placeholder="Cth: kolaborasi-graffiti-bandung" style="padding:10px 14px; background:#151515; border:1px solid rgba(255,255,255,0.1); border-radius:4px; color:#fff;">
+              </div>
+              <div class="form-grid" style="display:grid; grid-template-columns:1fr 1fr; gap:20px;">
+                <div class="field" style="display:flex; flex-direction:column; gap:6px;">
+                  <label style="font-size:12px; font-weight:600; opacity:0.8;">Kota</label>
+                  <input type="text" id="lifestyle-city" placeholder="Cth: Bandung" style="padding:10px 14px; background:#151515; border:1px solid rgba(255,255,255,0.1); border-radius:4px; color:#fff;">
+                </div>
+                <div class="field" style="display:flex; flex-direction:column; gap:6px;">
+                  <label style="font-size:12px; font-weight:600; opacity:0.8;">Provinsi</label>
+                  <input type="text" id="lifestyle-province" placeholder="Cth: Jawa Barat" style="padding:10px 14px; background:#151515; border:1px solid rgba(255,255,255,0.1); border-radius:4px; color:#fff;">
+                </div>
+              </div>
+              <div class="field" style="display:flex; flex-direction:column; gap:6px;">
+                <label style="font-size:12px; font-weight:600; opacity:0.8;">Isi Artikel/Konten *</label>
+                <textarea id="lifestyle-content" required placeholder="Tuliskan artikel lengkap di sini..." style="padding:12px; background:#151515; border:1px solid rgba(255,255,255,0.1); border-radius:4px; color:#fff; min-height:120px; font-family:inherit; resize:vertical;"></textarea>
+              </div>
+              <button type="submit" class="btn primary" style="margin-top: 16px; align-self: flex-start;">Publish Lifestyle Post</button>
+            </form>
+          </div>
+          <div class="dash-box">
+            <h2 class="sec-head" style="margin-bottom: 24px;">MANAJEMEN ARTIKEL LIFESTYLE</h2>
+            <div style="margin-bottom: 20px; display:flex; gap:10px;">
+              <button class="btn btn-sm btn-primary active-subtab" id="subtab-streetwear" style="padding: 8px 16px; height: auto;">Streetwear</button>
+              <button class="btn btn-sm" id="subtab-graffiti" style="padding: 8px 16px; height: auto; background:rgba(255,255,255,0.05); color:#fff; border:1px solid rgba(255,255,255,0.1);">Graffiti</button>
+              <button class="btn btn-sm" id="subtab-dance" style="padding: 8px 16px; height: auto; background:rgba(255,255,255,0.05); color:#fff; border:1px solid rgba(255,255,255,0.1);">Dance</button>
+            </div>
+            <div style="overflow-x:auto;">
+              <table style="width:100%; text-align:left; border-collapse:collapse;">
+                <thead>
+                  <tr style="border-bottom:1px solid rgba(255,255,255,0.1);">
+                    <th style="padding:12px;">Judul</th>
+                    <th style="padding:12px;">Lokasi</th>
+                    <th style="padding:12px;">Aksi</th>
+                  </tr>
+                </thead>
+                <tbody id="admin-lifestyle-list"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- INTERVIEWS SECTION -->
+        <section id="interviews" style="display:none;">
+          <div class="dash-box" style="margin-bottom: 30px;">
+            <h2 class="sec-head" style="margin-bottom: 24px;">TAMBAH WAWANCARA/EDITORIAL BARU</h2>
+            <form id="form-admin-interview" style="display:flex; flex-direction:column; gap:16px;">
+              <div class="field" style="display:flex; flex-direction:column; gap:6px;">
+                <label style="font-size:12px; font-weight:600; opacity:0.8;">Judul Wawancara / Quote Utama *</label>
+                <input type="text" id="interview-title" required placeholder="Cth: Wawancara Eksklusif Bersama Yung Kota" style="padding:10px 14px; background:#151515; border:1px solid rgba(255,255,255,0.1); border-radius:4px; color:#fff;">
+              </div>
+              <div class="field" style="display:flex; flex-direction:column; gap:6px;">
+                <label style="font-size:12px; font-weight:600; opacity:0.8;">Slug (URL) *</label>
+                <input type="text" id="interview-slug" required placeholder="Cth: wawancara-yung-kota" style="padding:10px 14px; background:#151515; border:1px solid rgba(255,255,255,0.1); border-radius:4px; color:#fff;">
+              </div>
+              <div class="field" style="display:flex; flex-direction:column; gap:6px;">
+                <label style="font-size:12px; font-weight:600; opacity:0.8;">Konten Wawancara *</label>
+                <textarea id="interview-content" required placeholder="Tuliskan percakapan wawancara lengkap di sini..." style="padding:12px; background:#151515; border:1px solid rgba(255,255,255,0.1); border-radius:4px; color:#fff; min-height:120px; font-family:inherit; resize:vertical;"></textarea>
+              </div>
+              <button type="submit" class="btn primary" style="margin-top: 16px; align-self: flex-start;">Publish Interview</button>
+            </form>
+          </div>
+          <div class="dash-box">
+            <h2 class="sec-head" style="margin-bottom: 24px;">DAFTAR EDITORIAL / INTERVIEWS</h2>
+            <div style="overflow-x:auto;">
+              <table style="width:100%; text-align:left; border-collapse:collapse;">
+                <thead>
+                  <tr style="border-bottom:1px solid rgba(255,255,255,0.1);">
+                    <th style="padding:12px;">Judul</th>
+                    <th style="padding:12px;">Aksi</th>
+                  </tr>
+                </thead>
+                <tbody id="admin-interviews-list"></tbody>
               </table>
             </div>
           </div>
