@@ -6,8 +6,8 @@
  * - anything else          → uses production backend
  */
 
-const IS_LOCAL = ['localhost', '127.0.0.1', ''].includes(window.location.hostname);
-export const API_BASE_URL = ''; // Gunakan relative path untuk Unified Deployment (Backend + Frontend satu server)
+const IS_LOCAL = ['localhost', '127.0.0.1', ''].includes(window.location.hostname) && window.location.port !== '4000';
+export const API_BASE_URL = IS_LOCAL ? 'http://localhost:4000' : ''; // Gunakan relative path untuk Unified Deployment (Backend + Frontend satu server)
 
 export function resolveUrl(url) {
   if (!url) return '';
