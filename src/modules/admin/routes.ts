@@ -146,7 +146,7 @@ router.get('/reviews', async (_req, res) => {
 
 router.post('/reviews', async (req, res) => {
   try {
-    const { title, slug, content, rating, artist_id } = req.body;
+    const { title, slug, content, rating, artist_id, spotify_link, youtube_link } = req.body;
     if (!title || !slug || !content || !artist_id) {
       return res.status(400).json({ message: 'Missing required fields' });
     }
@@ -156,7 +156,9 @@ router.post('/reviews', async (req, res) => {
         slug,
         content,
         rating: rating ? parseFloat(rating) : null,
-        artist_id
+        artist_id,
+        spotify_link: spotify_link || null,
+        youtube_link: youtube_link || null
       }
     });
     res.status(201).json(review);
