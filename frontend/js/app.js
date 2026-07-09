@@ -507,12 +507,14 @@ async function loadHomeReviews() {
       const embedList = document.querySelector('.article-demo .embed-list');
       if (embedList) {
         embedList.innerHTML = '';
-        if (latestReview.artist?.spotify) {
-          embedList.innerHTML += `<a href="${latestReview.artist.spotify}" class="auto-embed-link">Spotify Artist</a>`;
-        }
+        
+        // Use custom review links if provided, otherwise default to placeholders
+        const spotLink = latestReview.spotify_link || "https://open.spotify.com/track/2AT8iROs4FQueDv2c8q2KE";
+        const ytLink = latestReview.youtube_link || "https://www.youtube.com/watch?v=VqB1uoDTdKM";
+        
         embedList.innerHTML += `
-          <a href="https://open.spotify.com/track/2AT8iROs4FQueDv2c8q2KE" class="auto-embed-link">Spotify: Contoh Lagu Hip-Hop</a>
-          <a href="https://www.youtube.com/watch?v=VqB1uoDTdKM" class="auto-embed-link">YouTube: Contoh Video Musik</a>
+          <a href="${spotLink}" class="auto-embed-link">Spotify Player</a>
+          <a href="${ytLink}" class="auto-embed-link">YouTube Player</a>
         `;
         initAutoEmbeds();
       }
