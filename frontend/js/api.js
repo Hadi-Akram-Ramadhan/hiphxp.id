@@ -326,7 +326,9 @@ export async function submitSong(formData, token) {
     }
     return await response.json();
   } catch (error) {
-    console.warn(`[API] /api/songs failed:`, error.message);
+    if (IS_LOCAL) {
+      console.warn(`[API] /api/songs failed:`, error.message);
+    }
     throw error;
   }
 }
@@ -352,7 +354,9 @@ export async function updateMyProfile(formData, token) {
     }
     return await response.json();
   } catch (error) {
-    console.warn(`[API] /api/artists/me/profile failed:`, error.message);
+    if (IS_LOCAL) {
+      console.warn(`[API] /api/artists/me/profile failed:`, error.message);
+    }
     throw error;
   }
 }
@@ -371,7 +375,9 @@ export async function submitEvent(formData, token) {
     }
     return await response.json();
   } catch (error) {
-    console.warn(`[API] /api/events failed:`, error.message);
+    if (IS_LOCAL) {
+      console.warn(`[API] /api/events failed:`, error.message);
+    }
     throw error;
   }
 }
