@@ -167,11 +167,13 @@ function setupAdminForms() {
       const artist_id = document.getElementById('review-artist-id').value;
       const rating = document.getElementById('review-rating').value;
       const content = document.getElementById('review-content').value;
+      const spotify_link = document.getElementById('review-spotify').value;
+      const youtube_link = document.getElementById('review-youtube').value;
 
       try {
         await apiFetch('/api/admin/reviews', {
           method: 'POST',
-          body: JSON.stringify({ title, slug, artist_id, rating, content })
+          body: JSON.stringify({ title, slug, artist_id, rating, content, spotify_link, youtube_link })
         });
         formReview.reset();
         await customAlert('Review berhasil dipublikasikan!');
