@@ -226,7 +226,9 @@ export async function apiFetch(path, options = {}) {
     }
     return await response.json();
   } catch (error) {
-    console.warn(`[API] ${path} failed:`, error.message);
+    if (IS_LOCAL) {
+      console.warn(`[API] ${path} failed:`, error.message);
+    }
     throw error;
   }
 }
