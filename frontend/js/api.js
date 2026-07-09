@@ -203,7 +203,10 @@ export function resolveUrl(url) {
 export async function apiFetch(path, options = {}) {
   try {
     const token = localStorage.getItem('access_token');
-    const headers = { 'Content-Type': 'application/json', ...options.headers };
+    const headers = { ...options.headers };
+    if (!(options.body instanceof FormData)) {
+      headers['Content-Type'] = 'application/json';
+    }
     if (token) {
       headers['Authorization'] = `Bearer ${token}`;
     }
@@ -223,7 +226,9 @@ export async function apiFetch(path, options = {}) {
     }
     return await response.json();
   } catch (error) {
-    console.warn(`[API] ${path} failed:`, error.message);
+    if (IS_LOCAL) {
+      console.warn(`[API] ${path} failed:`, error.message);
+    }
     throw error;
   }
 }
@@ -321,7 +326,9 @@ export async function submitSong(formData, token) {
     }
     return await response.json();
   } catch (error) {
-    console.warn(`[API] /api/songs failed:`, error.message);
+    if (IS_LOCAL) {
+      console.warn(`[API] /api/songs failed:`, error.message);
+    }
     throw error;
   }
 }
@@ -347,7 +354,9 @@ export async function updateMyProfile(formData, token) {
     }
     return await response.json();
   } catch (error) {
-    console.warn(`[API] /api/artists/me/profile failed:`, error.message);
+    if (IS_LOCAL) {
+      console.warn(`[API] /api/artists/me/profile failed:`, error.message);
+    }
     throw error;
   }
 }
@@ -366,7 +375,9 @@ export async function submitEvent(formData, token) {
     }
     return await response.json();
   } catch (error) {
-    console.warn(`[API] /api/events failed:`, error.message);
+    if (IS_LOCAL) {
+      console.warn(`[API] /api/events failed:`, error.message);
+    }
     throw error;
   }
 }

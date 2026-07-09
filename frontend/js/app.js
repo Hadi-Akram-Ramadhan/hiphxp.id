@@ -450,10 +450,10 @@ function showContentModal(title, subtitle, contentHtml) {
         font-size: 15px;
         line-height: 1.7;
         opacity: 0.9;
-        white-space: pre-wrap;
       }
       .custom-content-body p {
         margin-bottom: 16px;
+        white-space: pre-wrap;
       }
       .custom-content-body strong {
         color: #fff;
@@ -507,12 +507,14 @@ async function loadHomeReviews() {
       const embedList = document.querySelector('.article-demo .embed-list');
       if (embedList) {
         embedList.innerHTML = '';
-        if (latestReview.artist?.spotify) {
-          embedList.innerHTML += `<a href="${latestReview.artist.spotify}" class="auto-embed-link">Spotify Artist</a>`;
-        }
+        
+        // Use custom review links if provided, otherwise default to placeholders
+        const spotLink = latestReview.spotify_link || "https://open.spotify.com/track/2AT8iROs4FQueDv2c8q2KE";
+        const ytLink = latestReview.youtube_link || "https://www.youtube.com/watch?v=VqB1uoDTdKM";
+        
         embedList.innerHTML += `
-          <a href="https://open.spotify.com/track/2AT8iROs4FQueDv2c8q2KE" class="auto-embed-link">Spotify: Contoh Lagu Hip-Hop</a>
-          <a href="https://www.youtube.com/watch?v=VqB1uoDTdKM" class="auto-embed-link">YouTube: Contoh Video Musik</a>
+          <a href="${spotLink}" class="auto-embed-link">Spotify Player</a>
+          <a href="${ytLink}" class="auto-embed-link">YouTube Player</a>
         `;
         initAutoEmbeds();
       }
@@ -661,15 +663,13 @@ async function loadSongMeanings() {
             const artistName = s.artist?.name || 'Unknown Artist';
             const safeContent = s.song_meaning.content.replace(/'/g, "\\'").replace(/"/g, '&quot;');
             return `
-              <div class="meaning-item" data-title="${escHtml(s.title)}" data-artist="${escHtml(artistName)}" data-content="${escHtml(safeContent)}" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.06); padding:16px; border-radius:6px; cursor:pointer; transition:all 0.2s;">
-                <div style="display:flex; align-items:center; gap:12px;">
-                  <div style="width:40px; height:40px; background:var(--ink); border-radius:4px; display:flex; align-items:center; justify-content:center; border:1px solid rgba(255,255,255,0.1);">
-                    <span style="font-size:18px; color:var(--red);">♪</span>
-                  </div>
-                  <div>
-                    <h5 style="font-family:'Archivo Black', sans-serif; font-size:15px; margin:0; color:#fff;">${escHtml(s.title)}</h5>
-                    <span style="font-family:'JetBrains Mono', monospace; font-size:11px; color:var(--grey);">${escHtml(artistName)}</span>
-                  </div>
+              <div class="meaning-item" data-title="${escHtml(s.title)}" data-artist="${escHtml(artistName)}" data-content="${escHtml(safeContent)}" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.06); padding:16px; border-radius:6px; cursor:pointer; transition:all 0.2s; display:flex; flex-direction:row; align-items:center; justify-content:flex-start; text-align:left; width:100%; box-sizing:border-box;">
+                <div style="width:40px; height:40px; background:var(--ink); border-radius:4px; display:flex; align-items:center; justify-content:center; border:1px solid rgba(255,255,255,0.1); margin-right:16px; flex-shrink:0;">
+                  <span style="font-size:18px; color:var(--red);">♪</span>
+                </div>
+                <div style="display:flex; flex-direction:column; gap:4px; align-items:flex-start; text-align:left;">
+                  <h5 style="font-family:'Archivo Black', sans-serif; font-size:15px; margin:0; color:#fff; text-align:left;">${escHtml(s.title)}</h5>
+                  <span style="font-family:'JetBrains Mono', monospace; font-size:11px; color:var(--grey); text-align:left;">${escHtml(artistName)}</span>
                 </div>
               </div>
             `;
