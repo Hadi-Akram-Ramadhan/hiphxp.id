@@ -111,7 +111,7 @@ nav.primary a:hover::after { width: 100%; }
 .hero-side .stat b { color: var(--paper); font-size: 20px; font-family: 'Archivo Black', sans-serif; display: block; }
 
 /* Ticker */
-.ticker { background: var(--red); color: var(--ink); overflow: hidden; white-space: nowrap; border-top: 2px solid var(--ink); }
+.ticker { background: var(--red); color: var(--ink); overflow: hidden; white-space: nowrap; border-top: 1px solid var(--ink); }
 .ticker-track { display: inline-block; padding: 11px 0; animation: scroll 32s linear infinite; }
 .ticker-track span { font-family: 'JetBrains Mono', monospace; font-size: 12.5px; text-transform: uppercase; letter-spacing: 0.08em; margin-right: 46px; font-weight: 700; }
 @keyframes scroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
@@ -136,8 +136,8 @@ section { padding: 88px 0; border-bottom: 1px solid var(--grey-line); }
 /* ================================================================
    MUSIC section
    ================================================================ */
-.music-cols { display: grid; grid-template-columns: repeat(3,1fr); gap: 0; border-top: 2px solid var(--ink); border-left: 2px solid var(--ink); }
-.music-col { border-right: 2px solid var(--ink); border-bottom: 2px solid var(--ink); padding: 30px 26px; position: relative; min-height: 250px; display: flex; flex-direction: column; transition: background .2s, color .2s; cursor: pointer; }
+.music-cols { display: grid; grid-template-columns: repeat(3,1fr); gap: 0; border-top: 1px solid var(--grey-line); border-left: 1px solid var(--grey-line); }
+.music-col { border-right: 1px solid var(--grey-line); border-bottom: 1px solid var(--grey-line); padding: 30px 26px; position: relative; min-height: 250px; display: flex; flex-direction: column; transition: background .2s, color .2s; cursor: pointer; }
 .music-col .num { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--grey); }
 .music-col h3 { font-size: 26px; margin: 14px 0 12px; font-family: 'Archivo Black', sans-serif; text-transform: uppercase; }
 .music-col p { font-size: 14px; color: var(--grey); line-height: 1.55; flex-grow: 1; transition: color .2s; }
@@ -147,8 +147,8 @@ section { padding: 88px 0; border-bottom: 1px solid var(--grey-line); }
 .music-col:hover .num { color: var(--red); }
 
 /* Songs / release radar list */
-.releases-grid { margin-top: 48px; display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 0; border: 2px solid var(--ink); }
-.release-card { padding: 22px; border-right: 2px solid var(--ink); border-bottom: 2px solid var(--ink); display: flex; flex-direction: column; gap: 10px; transition: background .2s; }
+.releases-grid { margin-top: 48px; display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 0; border: 1px solid var(--grey-line); }
+.release-card { padding: 22px; border-right: 1px solid var(--grey-line); border-bottom: 1px solid var(--grey-line); display: flex; flex-direction: column; gap: 10px; transition: background .2s; }
 .release-card:hover { background: var(--red-dim); }
 .release-card .rc-tag { font-family: 'JetBrains Mono', monospace; font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.07em; color: var(--red); }
 .release-card h4 { font-family: 'Archivo Black', sans-serif; font-size: 17px; text-transform: uppercase; line-height: 1.1; }
@@ -156,14 +156,14 @@ section { padding: 88px 0; border-bottom: 1px solid var(--grey-line); }
 .release-card .rc-date { font-family: 'JetBrains Mono', monospace; font-size: 10.5px; color: var(--grey); margin-top: auto; padding-top: 10px; border-top: 1px dashed var(--grey-line); }
 
 /* Media embed demo */
-.article-demo { margin-top: 56px; display: grid; grid-template-columns: 1fr 1fr; gap: 0; border: 2px solid var(--ink); }
-.article-demo .col-a { padding: 34px; border-right: 2px solid var(--ink); }
+.article-demo { margin-top: 56px; display: grid; grid-template-columns: 1fr 1fr; gap: 0; border: 1px solid var(--grey-line); }
+.article-demo .col-a { padding: 34px; border-right: 1px solid var(--grey-line); }
 .article-demo .col-b { padding: 34px; background: #eae8e0; }
 .article-demo h4 { font-family: 'Archivo Black', sans-serif; font-size: 24px; text-transform: uppercase; margin-bottom: 14px; }
 .article-demo .byline { font-family: 'JetBrains Mono', monospace; font-size: 11.5px; color: var(--grey); margin-bottom: 18px; text-transform: uppercase; letter-spacing: 0.06em; }
 .article-demo p.body-text { font-size: 14.5px; line-height: 1.7; color: #2b2b2b; margin-bottom: 14px; }
 .embed-label { font-family: 'JetBrains Mono', monospace; font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--grey); margin-bottom: 8px; display: block; }
-.embed-box { border: 1.5px solid var(--ink); background: var(--paper); padding: 14px; margin-bottom: 14px; display: flex; align-items: center; gap: 12px; transition: transform .15s; cursor: pointer; }
+.embed-box { border: 1px solid var(--grey-line); background: var(--paper); padding: 14px; margin-bottom: 14px; display: flex; align-items: center; gap: 12px; transition: transform .15s; cursor: pointer; }
 .embed-box:hover { transform: translateX(4px); }
 .embed-box:last-child { margin-bottom: 0; }
 .embed-icon { width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-family: 'Archivo Black', sans-serif; font-size: 13px; color: #fff; }
@@ -288,7 +288,7 @@ section { padding: 88px 0; border-bottom: 1px solid var(--grey-line); }
 /* ================================================================
    PARTNERSHIP / RATE CARD
    ================================================================ */
-.partnership { display: grid; grid-template-columns: 1fr 1fr; gap: 0; border: 2px solid var(--ink); }
+.partnership { display: grid; grid-template-columns: 1fr 1fr; gap: 0; border: 1px solid var(--grey-line); }
 .partnership-info { padding: 44px; }
 .partnership-info h2 { font-size: clamp(28px,3.6vw,42px); margin-bottom: 16px; }
 .partnership-info p { color: var(--grey); font-size: 14.5px; line-height: 1.6; max-width: 440px; margin-bottom: 30px; }
@@ -396,7 +396,7 @@ footer ul a:hover { color: var(--red); }
   .music-cols { grid-template-columns: 1fr; }
   .releases-grid { grid-template-columns: 1fr; }
   .article-demo { grid-template-columns: 1fr; }
-  .article-demo .col-a { border-right: none; border-bottom: 2px solid var(--ink); }
+  .article-demo .col-a { border-right: none; border-bottom: 1px solid var(--grey-line); }
   .lifestyle-grid { flex-direction: column; }
   .feature-editorial { grid-template-columns: 1fr; }
   .collective-grid { grid-template-columns: repeat(2,1fr); }
