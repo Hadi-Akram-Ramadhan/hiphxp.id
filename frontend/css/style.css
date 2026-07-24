@@ -350,10 +350,10 @@ section { padding: 88px 0; border-bottom: 1px solid var(--grey-line); }
 }
 .share-btn:hover { transform: translateY(-4px); }
 .share-btn svg { width: 26px; height: 26px; }
-.share-btn.ig { background: radial-gradient(circle at 30% 110%, #fdf497 0%, #fd5949 45%, #d6249f 60%, #285AEB 90%); }
-.share-btn.tiktok { background: #000; }
-.share-btn.x { background: #000; }
-.share-btn.wa { background: #20BD5C; }
+.share-btn.ig,
+.share-btn.tiktok,
+.share-btn.x,
+.share-btn.wa { background: #000; }
 .share-btn svg { fill: #fff; }
 
 /* ================================================================
